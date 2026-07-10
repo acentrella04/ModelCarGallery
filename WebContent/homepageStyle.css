@@ -1,0 +1,155 @@
+@charset "UTF-8";
+#logo{
+	border: none;
+}
+
+#imglogo{
+	width: 1390px;
+	height: 500px;
+}
+
+#navbar{
+	height: 500px;
+	width: 300px;
+	border: none;
+}
+#divnavbar{
+	width: 100%;
+	border-radius: 5px;
+	border: 1px solid #ddd;
+	background-color: #f9f9f9;
+	line-height: 1.8;
+}
+#maincontent{
+	display: flex;
+}
+#productfield{
+	border: none;
+	height: 500px;
+	width: 1050px;
+}
+#producttable{
+	width: 300px;
+	height: 350px;
+	border-spacing: 10px;
+	background-color: aqua;
+	overflow-wrap: break-word;
+}
+#tr,td{
+	background-color: white;
+}
+.addcartbutton{
+	margin-top: auto;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 10px;
+    background-color: #EE7600;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+	width: 200px;
+	height: 40px;
+	font-size: 16px;
+}
+.addcartbutton:hover {
+    background-color: #FF7F00; /* Effetto quando ci passi sopra col mouse */
+}
+#imgnews{
+	width: 100%;
+}
+#carosellonews{
+	display: flex;
+	width: 100%;
+	gap: 10px;
+	overflow-x: auto;
+	scroll-snap-type: x mandatory 
+}
+#carosellonews img{
+	width: 100%;
+	flex-shrink: 0;
+	scroll-snap-align: start;
+	border-radius: 5px;
+}
+#loginform{
+	border: none;
+}
+#divlogin{
+	width: 100%;
+	gap: 10px;
+	border-radius: 5px;
+	font-size: 20px;
+	border: 1px solid #ddd;
+	background-color: #f9f9f9;
+}
+#loginbutton{
+	width: 45%;
+	height: 25px;
+	font-size: 16px;
+	background-color: #EE7600;
+	border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+}
+#loginbutton:hover {
+    background-color: #FF7F00; /* Effetto quando ci passi sopra col mouse */
+}
+#regbutton{
+	width: 50%;
+	height: 25px;
+	font-size: 16px;
+	background-color: #EE7600;
+	border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+}
+#regbutton:hover {
+    background-color: #FF7F00; /* Effetto quando ci passi sopra col mouse */
+}
+.product-gallery {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 20px; 
+    justify-content: flex-start; 
+    padding: 15px;
+}
+
+/* Il singolo prodotto */
+.product-card {
+    width: 220px; /* Larghezza del blocco del prodotto */
+    border: 1px solid #ddd; /* Un bordino leggero per separare i modellini */
+    border-radius: 8px; /* Angoli un po' smussati */
+    padding: 15px;
+    text-align: center; /* Centra il testo e l'immagine */
+    background-color: #f9f9f9; /* Sfondo leggermente grigio */
+    display: flex;
+    flex-direction: column; /* Mette gli elementi in colonna dall'alto in basso */
+    justify-content: flex-start; /* Fa partire tutto dall'alto */
+}
+
+/* Assicurati che l'immagine sia adatta alla card */
+.productImg {
+    width: 100%; /* Si adatta alla larghezza della card */
+    height: 150px; /* Altezza fissa per avere tutte le foto uguali */
+    object-fit: cover; /* Taglia l'eccesso senza deformare l'auto */
+    border-radius: 4px;
+}
+.flex-bottom-link {
+    margin-top: auto; /* Spinge l'intero link (e il bottone dentro di esso) in basso */
+    display: inline-block; /* Permette al link di mantenere una struttura solida */
+    text-decoration: none; /* Rimuove sottolineature fastidiose dal link */
+}
+#processOrder{
+	width: 100%;
+	background-color: #EE7600;
+	border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+}
+#processOrder:hover{
+	background-color: #FF7F00;
+}
