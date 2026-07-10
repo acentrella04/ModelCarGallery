@@ -11,7 +11,7 @@
 </head>
 <body>
 	<h2>Insert</h2>
-	<form action="/admin/welcome" method="post" id="formAdmin">
+	<form action="${pageContext.request.contextPath}/admin/welcome" method="post" id="formAdmin">
 		<input type="hidden" name="action" value="insert"> 
 		<label for="name">Name:</label><br><input name="name" id="name" type="text" required placeholder="enter name"><br> 
 		<label for="description">Description:</label><br><textarea name="description" id="description" rows="3" required placeholder="enter description"></textarea><br>

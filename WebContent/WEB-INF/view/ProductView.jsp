@@ -26,7 +26,7 @@ if (errors != null){
 	</div>
 	<div id="maincontent">
 		<fieldset id="navbar">
-			<form method="post" >
+			<form method="post">
 				<div id="divlogin">
 					<b>Login</b><br>
 						Email:<input type="email" id="mailSpace" name="mail"> <br>Password:<input type="password" id="pwdSpace" name="pwd"> <br> 
