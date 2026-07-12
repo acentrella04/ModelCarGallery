@@ -57,7 +57,7 @@ if (errors != null){
 				%>
 				<tr>
 					<td><%=beancart.getName()%></td>
-					<td><a href="product?action=deleteC&code=<%=beancart.getCode()%>">Delete from cart</a></td>
+					<td><a href="welcome?action=deleteC&code=<%=beancart.getCode()%>">Delete from cart</a></td>
 				</tr>
 				<tr>
 					<td><input type="submit" value="Procedi all'ordine" id="processOrder">
@@ -93,7 +93,7 @@ if (errors != null){
 					%>
 
 					<br> <b><%=bean.getName()%></b><br> 
-					<br> <a href="product?action=addC&code=<%=bean.getCode()%>" class="flex-bottom-link"><input type="button" class="addcartbutton" value="Aggiungi al carrello"></a>
+					<br> <a href="welcome?action=addC&code=<%=bean.getCode()%>" class="flex-bottom-link"><input type="button" class="addcartbutton" value="Aggiungi al carrello"></a>
 				</div>
 
 				<%

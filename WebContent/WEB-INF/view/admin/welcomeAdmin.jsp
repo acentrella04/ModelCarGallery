@@ -43,6 +43,7 @@
 
 					<br> <b><%=bean.getName()%></b><br> 
 					<br> <a href="${pageContext.request.contextPath}/product?action=delete&code=<%=bean.getCode()%>" class="flex-bottom-link"><input type="button" class="addcartbutton" value="Elimina"></a>
+					<br> <a href="${pageContext.request.contextPath}/product?action=read&code=<%=bean.getCode()%>" class="flex-bottom-link"><input type="button" class="addcartbutton" value="Dettagli"></a><br>
 				</div>
 
 				<%
@@ -54,6 +55,36 @@
 				}
 				%>
 			</div>
+	<h2>Details</h2>
+	<%
+		ProductBean product = (ProductBean) request.getAttribute("product");
+		if (product != null) {
+	%>
+	<table border="1">
+		<tr>
+			<th>Code</th>
+			<th>Name</th>
+			<th>Description</th>
+			<th>Price</th>
+			<th>Quantity</th>
+		</tr>
+		<tr>
+			<td><%=product.getCode()%></td>
+			<td><%=product.getName()%></td>
+			<td><%=product.getDescription()%></td>
+			<td><%=product.getPrice()%></td>
+			<td><%=product.getQuantity()%></td>
+		</tr>
+	</table>
+    <form method="post" action="image" enctype="multipart/form-data">
+        <input type="hidden" name="action"  value="upload"/>
+        <input type="hidden" name="productCode" value="<%= product.getCode() %>"/>
+        <label for="image">Carica Immagine:</label><br><input type="file" name="image" id="image" accept="image/*"/>
+        <input type="submit" value="Carica">
+    </form>
+	<%
+		}
+	%>
 	<a href="<%=request.getContextPath()%>/common/logout">Logout</a> 
 </body>
 </html>
