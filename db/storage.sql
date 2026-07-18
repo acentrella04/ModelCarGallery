@@ -21,6 +21,23 @@ CREATE TABLE users(
     role VARCHAR(20) DEFAULT 'user'
 );
 
+CREATE TABLE orders(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(25) NOT NULL,
+    surname VARCHAR(30) NOT NULL,
+    address VARCHAR(40) NOT NULL,
+    numberaddress INT default 0 NOT NULL,
+    mail VARCHAR(30) NOT NULL 
+);
+
+CREATE TABLE order_items (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    product_code INT NOT NULL,
+    product_name VARCHAR(100) NOT NULL,
+    unit_price DECIMAL(10,2) NOT NULL,
+    quantity INT NOT NULL
+);
+
 INSERT INTO product(name,description,price,quantity,immagine_copertina,mime_type) VALUES
 	('LANCIA STRATOS TURBO EMINENECE ANDRUET-BICHE TOUR DE FRANCE 1976 #436','Modello 1:10',150.00,5,'Modellini-auto-scala-1-24-da-collezione.jpg','image/jpeg'),
     ('PORSCHE 911 SC GR.4 ROHRL-GEISTDORFER SAN REMO 1982 #1 - ARE 701-24','Modello 1:10',300.00,5,'170333.jpg','image/jpeg');
