@@ -55,6 +55,8 @@
 				}
 				%>
 			</div>
+	<fieldset id="detailsfield">
+	<div>
 	<h2>Details</h2>
 	<%
 		ProductBean product = (ProductBean) request.getAttribute("product");
@@ -85,6 +87,8 @@
 	<%
 		}
 	%>
+	</div>
+	</fieldset>
 	<a href="<%=request.getContextPath()%>/common/logout">Logout</a> 
 </body>
 </html>
