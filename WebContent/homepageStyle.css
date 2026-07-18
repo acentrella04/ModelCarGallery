@@ -24,7 +24,7 @@
 #maincontent{
 	display: flex;
 }
-#productfield{
+.productfield{
 	border: none;
 	min-height: 500px;
 	width: 1050px;

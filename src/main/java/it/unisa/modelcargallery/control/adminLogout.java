@@ -9,8 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class Logout
  */
-@WebServlet("/common/logout")
-public class Logout extends HttpServlet {
+@WebServlet("/admin/logout")
+public class adminLogout extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	

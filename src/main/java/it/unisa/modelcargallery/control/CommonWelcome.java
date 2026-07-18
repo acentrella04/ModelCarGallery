@@ -41,9 +41,19 @@ public class CommonWelcome extends HttpServlet {
 			cart = new CartBean();
 			request.getSession().setAttribute("cart", cart);
 		}
+		String action = request.getParameter("action");
 		processAction(request, cart);
 		// Salva il carrello aggiornato in sessione
 		request.getSession().setAttribute("cart", cart);
+		/*
+	     * Dopo aver aggiunto o eliminato un prodotto,
+	     * ricarica la servlet senza i parametri action e code.
+	     */
+		if ("addC".equalsIgnoreCase(action) || "deleteC".equalsIgnoreCase(action)) {
+
+	        response.sendRedirect(request.getContextPath() + "/common/welcome");
+	        return;
+	    }
 		// Carica la lista di prodotti (eventualmente aggiornata) nella richiesta per la vista
 		loadProducList(request);
 		
@@ -106,6 +116,7 @@ public class CommonWelcome extends HttpServlet {
 			throws SQLException {
 		int code = Integer.parseInt(request.getParameter("code"));
 		cart.addProduct(productDao.doRetrieveByKey(code));
+		
 	}
 	
 	private void loadProducList(HttpServletRequest request) {

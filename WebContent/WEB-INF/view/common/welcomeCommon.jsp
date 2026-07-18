@@ -45,7 +45,7 @@ if (errors != null){
 			CartBean cart = (CartBean) session.getAttribute("cart");
 			%>
 			<h2>Cart</h2>
-			<form action="ProcessOrder" method="post">
+			<form action="${pageContext.request.contextPath}/informationOrder" method="post">
 			<table border="1">
 				<tr>
 					<th>Name</th>
@@ -60,7 +60,6 @@ if (errors != null){
 					<td><a href="welcome?action=deleteC&code=<%=beancart.getCode()%>">Delete from cart</a></td>
 				</tr>
 				<tr>
-				
 				<%
 				}
 
@@ -74,7 +73,7 @@ if (errors != null){
 			</table>
 			</form>
 		</fieldset>
-		<fieldset id="productfield">
+		<fieldset class="productfield">
 			<div class="product-gallery">
 				<%
 				Collection<?> products = (Collection<?>) request.getAttribute("products");
@@ -143,6 +142,7 @@ if (errors != null){
 	%>
 	</div>
 	</fieldset>
-
+	
+	<a href="<%=request.getContextPath()%>/common/logout">Logout</a>
 </body>
 </html>

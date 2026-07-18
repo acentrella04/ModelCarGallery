@@ -6,6 +6,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -67,11 +69,13 @@ public class regServlet extends HttpServlet {
             }
             UserBean user=new UserBean();
             user.setUsername(email);
+            HttpSession session = request.getSession();
+            session.setAttribute("userMail", user.getUsername());
             String digiset = regServlet.toDigiset(pwd);
             user.setPasswordHash(digiset);
             user.setRole(role);
             userDao.doSave(user);
-            // Utente normale: qui eventualmente serve il carrello
+            // Utente normale
             CartBean cart = (CartBean) request.getSession().getAttribute("cart");
             if (cart == null) {
                cart = new CartBean();

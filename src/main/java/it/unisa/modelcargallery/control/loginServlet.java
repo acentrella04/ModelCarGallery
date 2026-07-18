@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -60,6 +61,8 @@ public class loginServlet extends HttpServlet {
                 dispatcher.forward(request, response);
                 return;
             }
+            HttpSession session = request.getSession();
+            session.setAttribute("userMail", user.getUsername());
             // 2. Hasho la password inserita nel form
             String digiset = loginServlet.toDigiset(pwd);
             if (!digiset.equals(user.getPasswordHash())) {

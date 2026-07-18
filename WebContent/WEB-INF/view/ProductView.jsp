@@ -49,7 +49,7 @@ if (errors != null){
 			CartBean cart = (CartBean) session.getAttribute("cart");
 			%>
 			<h2>Cart</h2>
-			<form action="ProcessOrder" method="post">
+			<form action="Setup" method="post">
 			<table border="1">
 				<tr>
 					<th>Name</th>
@@ -67,7 +67,7 @@ if (errors != null){
 					
 				<%
 				}
-
+				
 				if (!prodcart.isEmpty()) {
 				%>
 				<td><input type="submit" value="Procedi all'ordine" id="processOrder">
@@ -78,7 +78,7 @@ if (errors != null){
 			</table>
 			</form>
 		</fieldset>
-		<fieldset id="productfield">
+		<fieldset class="productfield">
 			<div class="product-gallery">
 				<%
 				Collection<?> products = (Collection<?>) request.getAttribute("products");
@@ -119,7 +119,7 @@ if (errors != null){
 
 		</fieldset>
 	</div>
-	<fieldset id="detailsfield">
+	<fieldset class="productfield">
 	<div id="detailsSection">
 	<h2>Details</h2>
 	<%

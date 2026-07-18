@@ -89,6 +89,6 @@
 	%>
 	</div>
 	</fieldset>
-	<a href="<%=request.getContextPath()%>/common/logout">Logout</a> 
+	<a href="<%=request.getContextPath()%>/admin/logout">Logout</a> 
 </body>
 </html>
