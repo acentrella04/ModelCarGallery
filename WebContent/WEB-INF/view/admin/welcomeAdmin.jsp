@@ -32,18 +32,18 @@
 					<%
 					if (bean.hasImage()) {
 					%>
-						<img alt="<%=bean.getName()%>" class="productImg" src="image?action=show&code=<%=bean.getCode()%>">
+						<img alt="<%=bean.getName()%>" class="productImg" src="<%=request.getContextPath()%>/image?action=show&code=<%=bean.getCode()%>">
 					<%
 					} else {
 					%>
-					<img alt="Nessuna Immagine" class="productImg" src="${pageContext.request.contextPath}/img/Modellini-auto-scala-1-24-da-collezione.jpg">
+						<img alt="Nessuna Immagine" class="productImg">
 					<%
 					}
 					%>
 
 					<br> <b><%=bean.getName()%></b><br> 
-					<br> <a href="${pageContext.request.contextPath}/product?action=delete&code=<%=bean.getCode()%>" class="flex-bottom-link"><input type="button" class="addcartbutton" value="Elimina"></a>
-					<br> <a href="${pageContext.request.contextPath}/product?action=read&code=<%=bean.getCode()%>" class="flex-bottom-link"><input type="button" class="addcartbutton" value="Dettagli"></a><br>
+					<br> <a href="${pageContext.request.contextPath}/admin/welcome?action=delete&code=<%=bean.getCode()%>" class="flex-bottom-link"><input type="button" class="addcartbutton" value="Elimina"></a>
+					<br> <a href="${pageContext.request.contextPath}/admin/welcome?action=read&code=<%=bean.getCode()%>" class="flex-bottom-link"><input type="button" class="addcartbutton" value="Dettagli"></a><br>
 				</div>
 
 				<%
@@ -76,7 +76,7 @@
 			<td><%=product.getQuantity()%></td>
 		</tr>
 	</table>
-    <form method="post" action="image" enctype="multipart/form-data">
+    <form method="post" action="<%=request.getContextPath()%>/image" enctype="multipart/form-data">
         <input type="hidden" name="action"  value="upload"/>
         <input type="hidden" name="productCode" value="<%= product.getCode() %>"/>
         <label for="image">Carica Immagine:</label><br><input type="file" name="image" id="image" accept="image/*"/>

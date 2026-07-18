@@ -96,7 +96,7 @@ public class ImageControl extends HttpServlet {
 					ProductBean bean = new ProductBean();
 					bean.setCode(productCode);
 					bean.setMimeType(mimeType);
-					bean.setImmagine_copertina(uploadImmagine_copertina);
+					bean.setImmagine_copertina(uniqueFileName);
 					try {
 						part.write(uploadImmagine_copertina);
 						productDao.doUpdateImage(bean);
@@ -107,7 +107,7 @@ public class ImageControl extends HttpServlet {
 				}
 			}
 		}
-		response.sendRedirect("product");
+		response.sendRedirect(request.getContextPath() + "/admin/welcome" );
 	}
 
 	private String buildUniqueFileName(Part part) {

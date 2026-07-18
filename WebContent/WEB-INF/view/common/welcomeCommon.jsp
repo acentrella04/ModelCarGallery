@@ -60,7 +60,13 @@ if (errors != null){
 					<td><a href="welcome?action=deleteC&code=<%=beancart.getCode()%>">Delete from cart</a></td>
 				</tr>
 				<tr>
-					<td><input type="submit" value="Procedi all'ordine" id="processOrder">
+				
+				<%
+				}
+
+				if (!prodcart.isEmpty()) {
+				%>
+				<td><input type="submit" value="Procedi all'ordine" id="processOrder">
 				</tr>
 				<%
 				}
@@ -83,17 +89,18 @@ if (errors != null){
 					<%
 					if (bean.hasImage()) {
 					%>
-						<img alt="<%=bean.getName()%>" class="productImg" src="image?action=show&code=<%=bean.getCode()%>">
+						<img alt="<%=bean.getName()%>" class="productImg" src="<%=request.getContextPath()%>/image?action=show&code=<%=bean.getCode()%>">
 					<%
 					} else {
 					%>
-					<img alt="Nessuna Immagine" class="productImg" src="${pageContext.request.contextPath}/img/Modellini-auto-scala-1-24-da-collezione.jpg">
+					<img alt="Nessuna Immagine" class="productImg">
 					<%
 					}
 					%>
 
 					<br> <b><%=bean.getName()%></b><br> 
 					<br> <a href="welcome?action=addC&code=<%=bean.getCode()%>" class="flex-bottom-link"><input type="button" class="addcartbutton" value="Aggiungi al carrello"></a>
+					<br> <a href="${pageContext.request.contextPath}/common/welcome?action=read&code=<%=bean.getCode()%>" class="flex-bottom-link"><input type="button" class="addcartbutton" value="Dettagli"></a><br>
 				</div>
 
 				<%
@@ -108,7 +115,34 @@ if (errors != null){
 
 		</fieldset>
 	</div>
-
+	<fieldset id="detailsfield">
+	<div>
+	<h2>Details</h2>
+	<%
+		ProductBean product = (ProductBean) request.getAttribute("product");
+		if (product != null) {
+	%>
+	<table border="1">
+		<tr>
+			<th>Code</th>
+			<th>Name</th>
+			<th>Description</th>
+			<th>Price</th>
+			<th>Quantity</th>
+		</tr>
+		<tr>
+			<td><%=product.getCode()%></td>
+			<td><%=product.getName()%></td>
+			<td><%=product.getDescription()%></td>
+			<td><%=product.getPrice()%></td>
+			<td><%=product.getQuantity()%></td>
+		</tr>
+	</table>
+	<%
+	}
+	%>
+	</div>
+	</fieldset>
 
 </body>
 </html>

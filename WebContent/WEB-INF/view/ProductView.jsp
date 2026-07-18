@@ -64,7 +64,13 @@ if (errors != null){
 					<td><a href="product?action=deleteC&code=<%=beancart.getCode()%>">Delete from cart</a></td>
 				</tr>
 				<tr>
-					<td><input type="submit" value="Procedi all'ordine" id="processOrder">
+					
+				<%
+				}
+
+				if (!prodcart.isEmpty()) {
+				%>
+				<td><input type="submit" value="Procedi all'ordine" id="processOrder">
 				</tr>
 				<%
 				}
@@ -98,6 +104,7 @@ if (errors != null){
 
 					<br> <b><%=bean.getName()%></b><br> 
 					<br> <a href="product?action=addC&code=<%=bean.getCode()%>" class="flex-bottom-link"><input type="button" class="addcartbutton" value="Aggiungi al carrello"></a>
+					<br> <a href="${pageContext.request.contextPath}/product?action=read&code=<%=bean.getCode()%>" class="flex-bottom-link"><input type="button" class="addcartbutton" value="Dettagli"></a><br>
 				</div>
 
 				<%
@@ -112,6 +119,34 @@ if (errors != null){
 
 		</fieldset>
 	</div>
+	<fieldset id="detailsfield">
+	<div id="detailsSection">
+	<h2>Details</h2>
+	<%
+		ProductBean product = (ProductBean) request.getAttribute("product");
+		if (product != null) {
+	%>
+	<table border="1">
+		<tr>
+			<th>Code</th>
+			<th>Name</th>
+			<th>Description</th>
+			<th>Price</th>
+			<th>Quantity</th>
+		</tr>
+		<tr>
+			<td><%=product.getCode()%></td>
+			<td><%=product.getName()%></td>
+			<td><%=product.getDescription()%></td>
+			<td><%=product.getPrice()%></td>
+			<td><%=product.getQuantity()%></td>
+		</tr>
+	</table>
+	<%
+	}
+	%>
+	</div>
+	</fieldset>
 
 
 </body>

@@ -9,9 +9,10 @@
 }
 
 #navbar{
-	height: 500px;
-	width: 300px;
-	border: none;
+	min-height: 500px;
+    height: auto;
+    width: 300px;
+    border: none;
 }
 #divnavbar{
 	width: 100%;
@@ -25,8 +26,9 @@
 }
 #productfield{
 	border: none;
-	height: 500px;
+	min-height: 500px;
 	width: 1050px;
+	height: auto;
 }
 #producttable{
 	width: 300px;
@@ -181,4 +183,9 @@
   .container {
     flex-direction: column;
   }
+}
+#detailsfield{
+	border: none;
+	height: auto;
+	width: auto;
 }

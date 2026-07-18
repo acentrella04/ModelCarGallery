@@ -71,20 +71,13 @@ public class regServlet extends HttpServlet {
             user.setPasswordHash(digiset);
             user.setRole(role);
             userDao.doSave(user);
-            if ("admin".equals(role)) {
-                // Admin: va alla pagina admin, niente carrello
-                response.sendRedirect(request.getContextPath() + "/admin/welcome");
-                return;
-            } else {
-                // Utente normale: qui eventualmente serve il carrello
-                CartBean cart = (CartBean) request.getSession().getAttribute("cart");
-                if (cart == null) {
-                    cart = new CartBean();
-                    request.getSession().setAttribute("cart", cart);
-                }
-                response.sendRedirect(request.getContextPath() + "/common/welcome");
-                return;
-            }
+            // Utente normale: qui eventualmente serve il carrello
+            CartBean cart = (CartBean) request.getSession().getAttribute("cart");
+            if (cart == null) {
+               cart = new CartBean();
+               request.getSession().setAttribute("cart", cart);
+              }
+            response.sendRedirect(request.getContextPath() + "/common/welcome");
         }catch (Exception e) {
             throw new ServletException("Errore durante la registrazione", e);
         }

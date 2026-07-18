@@ -16,7 +16,7 @@
 				Email:<input type="email" id="mailSpace" name="mail"><br>
 				Password:<input type="password" id="pwdSpace" name="pwd"><br>
 				Role:<br>
-				User<input type="radio" name="role" value="user">Admin<input type="radio" name="role" value="admin"><br>
+				User<input type="radio" name="role" value="user" checked="checked"><br>
 				<input type="submit" value="Registrati">
 			</div>
 		</fieldset>

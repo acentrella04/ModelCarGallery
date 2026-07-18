@@ -36,7 +36,7 @@ public class ProductDaoImpl implements ProductDao {
     
     @Override
     public synchronized boolean doUpdateImage(ProductBean product) throws SQLException {
-        String sql = "UPDATE " + TABLE_NAME + " SET path = ?, mime_type = ? WHERE code = ?";
+        String sql = "UPDATE " + TABLE_NAME + " SET immagine_copertina = ?, mime_type = ? WHERE code = ?";
         try (Connection conn = ds.getConnection();
         		PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, product.getImmagine_copertina());
