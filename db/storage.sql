@@ -27,15 +27,9 @@ CREATE TABLE orders(
     surname VARCHAR(30) NOT NULL,
     address VARCHAR(40) NOT NULL,
     numberaddress INT default 0 NOT NULL,
-    mail VARCHAR(30) NOT NULL 
-);
-
-CREATE TABLE order_items (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    product_code INT NOT NULL,
-    product_name VARCHAR(100) NOT NULL,
     unit_price DECIMAL(10,2) NOT NULL,
-    quantity INT NOT NULL
+    quantity INT NOT NULL,
+    mail VARCHAR(30) NOT NULL
 );
 
 INSERT INTO product(name,description,price,quantity,immagine_copertina,mime_type) VALUES
