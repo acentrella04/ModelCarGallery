@@ -43,26 +43,30 @@ if (errors != null){
     			}
     			%>
 				</table>
-	<form method="post" action="${pageContext.request.contextPath}/ProcessOrder">
-		<fieldset>
-			<div>
-				<h1>Inserisci i tuoi dati e i dati di spedizione</h1>
-				Nome:<input type="text" id="nameSpace" name="name" required><br>
-				Cognome:<input type="text" id="surnameSpace" name="surname" required><br>
-				Indirizzo:<input type="text" id="addressSpace" name="address" required><br>
-				N.Civico:<input type="text" id="numberSpace" name="number" required><br>
-				Email:<input type="email" id="mailSpace" name="mail" value="${sessionScope.userMail}" readonly><br>
-				<br>
-			</div>
-			<div>
-				<h1>Inserisci i dati di fatturazione</h1>
-				Nome intestatario:<input type="text" id="nameCardSpace" name="nameCard" required><br>
-				Numero Carta:<input type="number" maxlength="16" id="numberCardSpace" name="numberCard" required><br>
-				Data Scadenza (mm/yy):<input type="text" id="expireSpace" name="expire" required><br>
-				CVV:<input type="number" maxlength="3" id="cvvSpace" name="CVV" required><br>
-				<input type="submit" value="Procedi all'ordine">
-			</div>
-		</fieldset>
-	</form>
+	<form action="<%=request.getContextPath()%>/ProcessOrder" method="post">
+
+    <label>Nome:</label>
+    <input type="text" name="name" required>
+
+    <label>Cognome:</label>
+    <input type="text" name="surname" required>
+
+    <label>Indirizzo:</label>
+    <input type="text" name="address" required>
+
+    <label>Numero civico:</label>
+    <input type="number" name="number" required>
+
+    <label>Metodo di pagamento:</label>
+
+    <select name="paymentMethod" required>
+        <option value="">Seleziona</option>
+        <option value="Carta">Carta</option>
+        <option value="PayPal">PayPal</option>
+        <option value="Contrassegno">Contrassegno</option>
+    </select>
+
+    <input type="submit" value="Conferma ordine">
+</form>
 </body>
 </html>

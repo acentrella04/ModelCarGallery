@@ -7,47 +7,44 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Ordine completato</title>
+    <title>I miei ordini</title>
 </head>
 
 <body>
 
-<%
-OrderBean order =
-    (OrderBean) request.getAttribute("order");
+<h1>I miei ordini</h1>
 
-if (order != null) {
+<%
+Collection<OrderBean> orders =(Collection<OrderBean>) request.getAttribute("orders");
+
+if (orders != null && !orders.isEmpty()) {
+
+    for (OrderBean order : orders) {
 %>
 
-<h1>Ordine effettuato con successo</h1>
+<hr>
+
+<h2>Ordine numero <%=order.getId()%></h2>
 
 <p>
-    Numero ordine:
-    <%=order.getId()%>
+    Data: <%=order.getOrderDate()%>
 </p>
 
 <p>
-    Cliente:
-    <%=order.getName()%>
-    <%=order.getSurname()%>
+    Totale: € <%=order.getTotal()%>
 </p>
 
 <p>
-    Indirizzo:
+    Spedizione:
     <%=order.getAddress()%>,
     <%=order.getNumberAddress()%>
-</p>
-
-<p>
-    Metodo di pagamento:
-    <%=order.getPaymentMethod()%>
 </p>
 
 <table border="1">
 
     <tr>
         <th>Prodotto</th>
-        <th>Prezzo unitario</th>
+        <th>Prezzo</th>
         <th>Quantità</th>
         <th>Subtotale</th>
     </tr>
@@ -58,16 +55,9 @@ if (order != null) {
 
     <tr>
         <td><%=item.getProductName()%></td>
-
-        <td>
-            € <%=item.getUnitPrice()%>
-        </td>
-
+        <td>€ <%=item.getUnitPrice()%></td>
         <td><%=item.getQuantity()%></td>
-
-        <td>
-            € <%=item.getSubtotal()%>
-        </td>
+        <td>€ <%=item.getSubtotal()%></td>
     </tr>
 
     <%
@@ -76,15 +66,12 @@ if (order != null) {
 
 </table>
 
-<h2>
-    Totale: € <%=order.getTotal()%>
-</h2>
-
 <%
+    }
 } else {
 %>
 
-<p>Ordine non disponibile.</p>
+<p>Non hai ancora effettuato ordini.</p>
 
 <%
 }

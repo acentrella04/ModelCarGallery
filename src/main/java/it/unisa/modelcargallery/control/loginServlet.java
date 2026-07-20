@@ -1,12 +1,13 @@
 package it.unisa.modelcargallery.control;
 
 import jakarta.servlet.RequestDispatcher;
+import java.util.UUID;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -61,30 +62,52 @@ public class loginServlet extends HttpServlet {
                 dispatcher.forward(request, response);
                 return;
             }
-            HttpSession session = request.getSession();
-            session.setAttribute("userMail", user.getUsername());
             // 2. Hasho la password inserita nel form
             String digiset = loginServlet.toDigiset(pwd);
+
             if (!digiset.equals(user.getPasswordHash())) {
-                errors.add("Email o password errati2");
+
+                errors.add("Email o password errati");
                 request.setAttribute("errors", errors);
                 dispatcher.forward(request, response);
+
                 return;
-            }else{
-                request.getSession().setAttribute("user", user);
-                request.getSession().setAttribute("role", user.getRole());
-                if ("admin".equals(user.getRole())) {
-                    // Admin: va alla pagina admin, niente carrello
-                    response.sendRedirect(request.getContextPath() + "/admin/welcome");
+
+            } else {
+
+                HttpSession session = request.getSession();
+
+                session.setAttribute("user", user);
+                session.setAttribute("userMail", user.getUsername());
+                session.setAttribute("role", user.getRole());
+
+                session.setAttribute(
+                    "authToken",
+                    UUID.randomUUID().toString()
+                );
+
+                if ("admin".equalsIgnoreCase(user.getRole())) {
+
+                    response.sendRedirect(
+                        request.getContextPath() + "/admin/welcome"
+                    );
+
                     return;
+
                 } else {
-                    // Utente normale: qui eventualmente serve il carrello
-                    CartBean cart = (CartBean) request.getSession().getAttribute("cart");
+
+                    CartBean cart =
+                        (CartBean) session.getAttribute("cart");
+
                     if (cart == null) {
                         cart = new CartBean();
-                        request.getSession().setAttribute("cart", cart);
+                        session.setAttribute("cart", cart);
                     }
-                    response.sendRedirect(request.getContextPath() + "/common/welcome");
+
+                    response.sendRedirect(
+                        request.getContextPath() + "/common/welcome"
+                    );
+
                     return;
                 }
             }

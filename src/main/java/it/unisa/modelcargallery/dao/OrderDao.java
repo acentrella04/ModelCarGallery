@@ -7,12 +7,13 @@ import it.unisa.modelcargallery.model.OrderBean;
 
 public interface OrderDao {
 
-    public void doSave(OrderBean order) throws SQLException;
-    
-    public boolean doDelete(int code) throws SQLException;
-    
-    public OrderBean doRetrieveByKey(int code) throws SQLException;
-	
-	public Collection<OrderBean> doRetrieveAll(String order) throws SQLException;
-    
+    void doSave(OrderBean order) throws SQLException;
+
+    OrderBean doRetrieveByKey(int id) throws SQLException;
+
+    Collection<OrderBean> doRetrieveByUserId(int userId)throws SQLException;
+
+    Collection<OrderBean> doRetrieveAll(String from,String to,String mail)throws SQLException;
+
+    boolean doDelete(int id) throws SQLException;
 }
