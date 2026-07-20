@@ -1,85 +1,164 @@
-<%@ page language="java"
-    contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"
-    import="java.util.*,it.unisa.modelcargallery.model.*"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
+	import="java.util.*,it.unisa.modelcargallery.model.*" %>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>I miei ordini</title>
-</head>
+	<!DOCTYPE html>
+	<html lang="it">
 
-<body>
+	<head>
 
-<h1>I miei ordini</h1>
+		<meta charset="UTF-8">
 
-<%
-Collection<OrderBean> orders =(Collection<OrderBean>) request.getAttribute("orders");
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 
-if (orders != null && !orders.isEmpty()) {
+		<title>I miei ordini</title>
 
-    for (OrderBean order : orders) {
-%>
+		<link rel="stylesheet" href="<%=request.getContextPath()%>/styles/forms.css">
 
-<hr>
+		<link rel="stylesheet" href="<%=request.getContextPath()%>/styles/responsive.css">
 
-<h2>Ordine numero <%=order.getId()%></h2>
+	</head>
 
-<p>
-    Data: <%=order.getOrderDate()%>
-</p>
+	<body>
 
-<p>
-    Totale: € <%=order.getTotal()%>
-</p>
+		<header id="logo">
 
-<p>
-    Spedizione:
-    <%=order.getAddress()%>,
-    <%=order.getNumberAddress()%>
-</p>
+			<a href="<%=request.getContextPath()%>/common/welcome">
 
-<table border="1">
+				<img id="imglogo" src="<%=request.getContextPath()%>/images/Gemini_Generated_Image_es7nd4es7nd4es7n.png"
+					alt="Model Car Gallery">
 
-    <tr>
-        <th>Prodotto</th>
-        <th>Prezzo</th>
-        <th>Quantità</th>
-        <th>Subtotale</th>
-    </tr>
+			</a>
 
-    <%
-    for (OrderItemBean item : order.getItems()) {
-    %>
+		</header>
 
-    <tr>
-        <td><%=item.getProductName()%></td>
-        <td>€ <%=item.getUnitPrice()%></td>
-        <td><%=item.getQuantity()%></td>
-        <td>€ <%=item.getSubtotal()%></td>
-    </tr>
+		<main>
 
-    <%
-    }
-    %>
+			<section class="order-card">
 
-</table>
+				<h1>I miei ordini</h1>
 
-<%
-    }
-} else {
-%>
+				<p>
+					In questa pagina puoi visualizzare tutti gli ordini
+					effettuati con il tuo account.
+				</p>
 
-<p>Non hai ancora effettuato ordini.</p>
+			</section>
 
-<%
-}
-%>
+			<% Collection<OrderBean> orders =
+				(Collection<OrderBean>)
+					request.getAttribute("orders");
 
-<a href="<%=request.getContextPath()%>/common/welcome">
-    Torna alla pagina principale
-</a>
+					if (orders != null && !orders.isEmpty()) {
 
-</body>
-</html>
+					for (OrderBean order : orders) {
+					%>
+
+					<section class="order-card">
+
+						<h2>
+							Ordine numero <%=order.getId()%>
+						</h2>
+
+						<p>
+							<strong>Data:</strong>
+							<%=order.getOrderDate()%>
+						</p>
+
+						<p>
+							<strong>Indirizzo di spedizione:</strong>
+							<%=order.getAddress()%>,
+								<%=order.getNumberAddress()%>
+						</p>
+
+						<p>
+							<strong>Metodo di pagamento:</strong>
+							<%=order.getPaymentMethod()%>
+						</p>
+
+						<div class="table-wrapper">
+
+							<table>
+
+								<thead>
+
+									<tr>
+										<th>Prodotto</th>
+										<th>Prezzo acquistato</th>
+										<th>Quantità</th>
+										<th>Subtotale</th>
+									</tr>
+
+								</thead>
+
+								<tbody>
+
+									<% for (OrderItemBean item : order.getItems()) { %>
+
+										<tr>
+
+											<td>
+												<%=item.getProductName()%>
+											</td>
+
+											<td>
+												€ <%=String.format( Locale.US, "%.2f" , item.getUnitPrice() )%>
+											</td>
+
+											<td>
+												<%=item.getQuantity()%>
+											</td>
+
+											<td>
+												€ <%=String.format( Locale.US, "%.2f" , item.getSubtotal() )%>
+											</td>
+
+										</tr>
+
+										<% } %>
+
+								</tbody>
+
+							</table>
+
+						</div>
+
+						<h3>
+							Totale ordine:
+							€ <%=String.format( Locale.US, "%.2f" , order.getTotal() )%>
+						</h3>
+
+					</section>
+
+					<% } } else { %>
+
+						<section class="order-card">
+
+							<h2>Nessun ordine presente</h2>
+
+							<p>
+								Non hai ancora effettuato nessun ordine.
+							</p>
+
+						</section>
+
+						<% } %>
+
+							<nav class="order-card">
+
+								<a href="<%=request.getContextPath()%>/common/welcome">
+									Torna alla pagina principale
+								</a>
+
+								<br><br>
+
+								<a href="<%=request.getContextPath()%>/common/logout">
+									Logout
+								</a>
+
+							</nav>
+
+		</main>
+
+	</body>
+
+	</html>

@@ -1,122 +1,245 @@
-<%@ page language="java"
-    contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"
-    import="java.util.*,it.unisa.modelcargallery.model.*"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
+	import="java.util.*,it.unisa.modelcargallery.model.*" %>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Gestione ordini</title>
-</head>
+	<!DOCTYPE html>
+	<html lang="it">
 
-<body>
+	<head>
 
-<h1>Ordini ricevuti</h1>
+		<meta charset="UTF-8">
 
-<form action="<%=request.getContextPath()%>/admin/orders"
-      method="get">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <label for="from">Dalla data:</label>
+		<title>Gestione ordini</title>
 
-    <input type="date"
-           name="from"
-           id="from"
-           value="<%=request.getParameter("from") != null
-               ? request.getParameter("from")
-               : ""%>">
+		<link rel="stylesheet" href="<%=request.getContextPath()%>/styles/forms.css">
 
-    <label for="to">Alla data:</label>
+		<link rel="stylesheet" href="<%=request.getContextPath()%>/styles/responsive.css">
 
-    <input type="date"
-           name="to"
-           id="to"
-           value="<%=request.getParameter("to") != null
-               ? request.getParameter("to")
-               : ""%>">
+	</head>
 
-    <label for="mail">Cliente:</label>
+	<body>
 
-    <input type="email"
-           name="mail"
-           id="mail"
-           value="<%=request.getParameter("mail") != null
-               ? request.getParameter("mail")
-               : ""%>">
+		<header id="logo">
 
-    <input type="submit" value="Cerca">
-</form>
+			<a href="<%=request.getContextPath()%>/admin/welcome">
 
-<%
-Collection<OrderBean> orders =(Collection<OrderBean>) request.getAttribute("orders");
+				<img id="imglogo" src="<%=request.getContextPath()%>/images/Gemini_Generated_Image_es7nd4es7nd4es7n.png"
+					alt="Model Car Gallery">
 
-if (orders != null && !orders.isEmpty()) {
+			</a>
 
-    for (OrderBean order : orders) {
-%>
+		</header>
 
-<hr>
+		<main>
 
-<h2>Ordine numero <%=order.getId()%></h2>
+			<section class="order-card">
 
-<p>
-    Cliente:
-    <%=order.getName()%>
-    <%=order.getSurname()%>
-</p>
+				<h1>Ordini ricevuti</h1>
 
-<p>
-    Email: <%=order.getMail()%>
-</p>
+				<p>
+					Da questa pagina puoi visualizzare tutti gli ordini
+					e filtrarli per data o cliente.
+				</p>
 
-<p>
-    Data: <%=order.getOrderDate()%>
-</p>
+			</section>
 
-<p>
-    Totale: € <%=order.getTotal()%>
-</p>
 
-<table border="1">
+			<!-- =========================
+         FILTRI DEGLI ORDINI
+         ========================= -->
 
-    <tr>
-        <th>Codice</th>
-        <th>Prodotto</th>
-        <th>Prezzo acquistato</th>
-        <th>Quantità</th>
-    </tr>
+			<form class="order-filters" action="<%=request.getContextPath()%>/admin/orders" method="get">
 
-    <%
-    for (OrderItemBean item : order.getItems()) {
-    %>
+				<div class="form-group">
 
-    <tr>
-        <td><%=item.getProductCode()%></td>
-        <td><%=item.getProductName()%></td>
-        <td>€ <%=item.getUnitPrice()%></td>
-        <td><%=item.getQuantity()%></td>
-    </tr>
+					<label for="from">
+						Dalla data:
+					</label>
 
-    <%
-    }
-    %>
+					<input type="date" name="from" id="from" value="<%=request.getParameter(" from") !=null ?
+						request.getParameter("from") : "" %>">
 
-</table>
+				</div>
 
-<%
-    }
-} else {
-%>
+				<div class="form-group">
 
-<p>Nessun ordine trovato.</p>
+					<label for="to">
+						Alla data:
+					</label>
 
-<%
-}
-%>
+					<input type="date" name="to" id="to" value="<%=request.getParameter(" to") !=null ?
+						request.getParameter("to") : "" %>">
 
-<a href="<%=request.getContextPath()%>/admin/welcome">
-    Torna all'area amministratore
-</a>
+				</div>
 
-</body>
-</html>
+				<div class="form-group">
+
+					<label for="mail">
+						Email cliente:
+					</label>
+
+					<input type="email" name="mail" id="mail" placeholder="cliente@email.it"
+						value="<%=request.getParameter(" mail") !=null ? request.getParameter("mail") : "" %>">
+
+				</div>
+
+				<div class="filter-actions">
+
+					<input type="submit" value="Cerca">
+
+					<a href="<%=request.getContextPath()%>/admin/orders">
+						Rimuovi filtri
+					</a>
+
+				</div>
+
+			</form>
+
+
+			<!-- =========================
+         ELENCO DEGLI ORDINI
+         ========================= -->
+
+			<% Collection<OrderBean> orders =
+				(Collection<OrderBean>)
+					request.getAttribute("orders");
+
+					if (orders != null && !orders.isEmpty()) {
+
+					for (OrderBean order : orders) {
+					%>
+
+					<section class="order-card">
+
+						<h2>
+							Ordine numero <%=order.getId()%>
+						</h2>
+
+						<p>
+							<strong>Cliente:</strong>
+							<%=order.getName()%>
+								<%=order.getSurname()%>
+						</p>
+
+						<p>
+							<strong>Email:</strong>
+							<%=order.getMail()%>
+						</p>
+
+						<p>
+							<strong>Data:</strong>
+							<%=order.getOrderDate()%>
+						</p>
+
+						<p>
+							<strong>Indirizzo di spedizione:</strong>
+							<%=order.getAddress()%>,
+								<%=order.getNumberAddress()%>
+						</p>
+
+						<p>
+							<strong>Metodo di pagamento:</strong>
+							<%=order.getPaymentMethod()%>
+						</p>
+
+
+						<!-- PRODOTTI DELL’ORDINE -->
+
+						<div class="table-wrapper">
+
+							<table>
+
+								<thead>
+
+									<tr>
+										<th>Codice</th>
+										<th>Prodotto</th>
+										<th>Prezzo acquistato</th>
+										<th>Quantità</th>
+										<th>Subtotale</th>
+									</tr>
+
+								</thead>
+
+								<tbody>
+
+									<% for (OrderItemBean item : order.getItems()) { %>
+
+										<tr>
+
+											<td>
+												<%=item.getProductCode()%>
+											</td>
+
+											<td>
+												<%=item.getProductName()%>
+											</td>
+
+											<td>
+												€ <%=String.format( Locale.US, "%.2f" , item.getUnitPrice() )%>
+											</td>
+
+											<td>
+												<%=item.getQuantity()%>
+											</td>
+
+											<td>
+												€ <%=String.format( Locale.US, "%.2f" , item.getSubtotal() )%>
+											</td>
+
+										</tr>
+
+										<% } %>
+
+								</tbody>
+
+							</table>
+
+						</div>
+
+						<h3>
+							Totale ordine:
+							€ <%=String.format( Locale.US, "%.2f" , order.getTotal() )%>
+						</h3>
+
+					</section>
+
+					<% } } else { %>
+
+						<section class="order-card">
+
+							<h2>Nessun ordine trovato</h2>
+
+							<p>
+								Non sono presenti ordini corrispondenti ai filtri selezionati.
+							</p>
+
+						</section>
+
+						<% } %>
+
+
+							<!-- =========================
+         NAVIGAZIONE
+         ========================= -->
+
+							<nav class="order-card">
+
+								<a href="<%=request.getContextPath()%>/admin/welcome">
+									Torna all’area amministratore
+								</a>
+
+								<br><br>
+
+								<a href="<%=request.getContextPath()%>/admin/logout">
+									Logout
+								</a>
+
+							</nav>
+
+		</main>
+
+	</body>
+
+	</html>

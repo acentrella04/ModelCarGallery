@@ -1,148 +1,515 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ page contentType="text/html; charset=UTF-8"
-	import="java.util.*,it.unisa.modelcargallery.model.*"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link href="<%=request.getContextPath()%>/homepageStyle.css" rel="stylesheet" type="text/css">
-<title>Welcome User</title>
-</head>
-<body bgcolor="#F0FFFF">
-<% 
-List<?> errors = (List<?>) request.getAttribute("errors");
-if (errors != null){
-	for (Object error: errors){ %>
-		<%=error %> <br>		
-	<%
-	}
-}
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
+	import="java.util.*,it.unisa.modelcargallery.model.*" %>
+
+	<!DOCTYPE html>
+	<html lang="it">
+
+	<head>
+
+		<meta charset="UTF-8">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<title>Welcome User</title>
+
+		<link rel="stylesheet" href="<%=request.getContextPath()%>/styles/forms.css">
+
+		<link rel="stylesheet" href="<%=request.getContextPath()%>/styles/responsive.css">
+
+		<script src="<%=request.getContextPath()%>/scripts/cart.js" defer>
+		</script>
+
+	</head>
+
+	<body data-context-path="<%=request.getContextPath()%>">
+
+		<% List<?> errors =
+			(List
+			<?>) request.getAttribute("errors");
+
+if (errors != null && !errors.isEmpty()) {
 %>
-	<div>
-		<fieldset id="logo">
-			<a href="http://localhost/ModelCarGallery/"><img id="imglogo" src="${pageContext.request.contextPath}/img/Gemini_Generated_Image_es7nd4es7nd4es7n.png"></a>
-		</fieldset>
-	</div>
-	<div id="maincontent">
-		<fieldset id="navbar">
-			<form method="post" >
-				<div id="divlogin">
-					Benvenuto<br>
-				</div>
-			</form>
-				<div id="divnavbar">
-					<div id="carosellonews">
-						<img src="${pageContext.request.contextPath}/img/Gemini_Generated_Image_kqax5fkqax5fkqax.png" id="imgnews"> 
-						<img src="${pageContext.request.contextPath}/img/Gemini_Generated_Image_f2fcmef2fcmef2fc.png" id="imgnews2">
-					</div>
-					<b>Auto Scala 1:10</b><br>
-					<b>Moto Scala 1:10</b><br>
-					<b>Auto Scala 1:100</b><br>
-					<b>Moto Scala 1:100</b><br>
-				</div>
-				<%
-			CartBean cart = (CartBean) session.getAttribute("cart");
+
+<div class="form-message form-message-error">
+
+    <%
+    for (Object error : errors) {
+    %>
+
+    <p><%=error%></p>
+
+    <%
+    }
+    %>
+
+</div>
+
+<%
+}
+
+UserBean loggedUser =
+        (UserBean) session.getAttribute("user");
+%>
+
+
+<!-- =========================
+     LOGO
+     ========================= -->
+
+<header id="logo">
+
+    <a href="<%=request.getContextPath()%>/common/welcome">
+
+        <img id="imglogo"
+             src="<%=request.getContextPath()%>/images/Gemini_Generated_Image_es7nd4es7nd4es7n.png"
+             alt="Model Car Gallery">
+
+    </a>
+
+</header>
+
+
+<!-- =========================
+     CONTENUTO PRINCIPALE
+     ========================= -->
+
+<main id="maincontent">
+
+
+    <!-- =========================
+         BARRA LATERALE
+         ========================= -->
+
+    <aside id="navbar">
+
+
+        <!-- AREA UTENTE -->
+
+        <div id="divlogin">
+
+            <h3>Benvenuto</h3>
+
+            <%
+            if (loggedUser != null) {
+            %>
+
+            <p>
+                <strong><%=loggedUser.getUsername()%></strong>
+            </p>
+
+            <%
+            }
+            %>
+
+            <p>
+                <a href="<%=request.getContextPath()%>/common/orders">
+                    I miei ordini
+                </a>
+            </p>
+
+            <p>
+                <a href="<%=request.getContextPath()%>/common/logout">
+                    Logout
+                </a>
+            </p>
+
+        </div>
+
+
+        <!-- MENU E CAROSELLO -->
+
+        <div id="divnavbar">
+
+            <div id="carosellonews">
+
+                <img src="<%=request.getContextPath()%>/images/Gemini_Generated_Image_kqax5fkqax5fkqax.png"
+                     id="imgnews"
+                     alt="Novità modellini auto">
+
+                <img src="<%=request.getContextPath()%>/images/Gemini_Generated_Image_f2fcmef2fcmef2fc.png"
+                     id="imgnews2"
+                     alt="Offerte modellini auto">
+
+            </div>
+
+            <div class="scale-list">
+
+                <span>Auto Scala 1:10</span>
+                <span>Moto Scala 1:10</span>
+                <span>Auto Scala 1:100</span>
+                <span>Moto Scala 1:100</span>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             CARRELLO
+             ========================= -->
+
+        <%
+        CartBean cart =
+                (CartBean) session.getAttribute("cart");
+
+        if (cart == null) {
+            cart = new CartBean();
+            session.setAttribute("cart", cart);
+        }
+
+        List<ProductBean> distinctProducts =
+                cart.getDistinctProducts();
+
+        boolean cartIsEmpty =
+                cart.getProducts().isEmpty();
+        %>
+
+        <section id="cartContainer">
+
+            <h2>Cart</h2>
+
+            <p id="cartAjaxMessage"
+               class="cart-message"
+               aria-live="polite">
+            </p>
+
+            <div class="table-wrapper">
+
+                <table id="cartTable"
+                       <%=cartIsEmpty ? "hidden" : ""%>>
+
+                    <thead>
+
+                        <tr>
+                            <th>Nome</th>
+                            <th>Prezzo</th>
+                            <th>Quantità</th>
+                            <th>Subtotale</th>
+                            <th>Azioni</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="cartBody">
+
+                    <%
+                    for (ProductBean beancart :
+                            distinctProducts) {
+
+                        int cartQuantity =
+                                cart.getQuantity(
+                                        beancart.getCode()
+                                );
+
+                        float rowSubtotal =
+                                beancart.getPrice()
+                                * cartQuantity;
+                    %>
+
+                        <tr>
+
+                            <td>
+                                <%=beancart.getName()%>
+                            </td>
+
+                            <td>
+                                € <%=String.format(
+                                        Locale.US,
+                                        "%.2f",
+                                        beancart.getPrice()
+                                )%>
+                            </td>
+
+                            <td class="cart-quantity-controls">
+
+                                <a href="<%=request.getContextPath()%>/common/welcome?action=deleteC&code=<%=beancart.getCode()%>"
+                                   class="cart-action"
+                                   data-action="deleteC"
+                                   data-code="<%=beancart.getCode()%>"
+                                   aria-label="Diminuisci quantità">
+                                    −
+                                </a>
+
+                                <strong>
+                                    <%=cartQuantity%>
+                                </strong>
+
+                                <a href="<%=request.getContextPath()%>/common/welcome?action=addC&code=<%=beancart.getCode()%>"
+                                   class="cart-action"
+                                   data-action="addC"
+                                   data-code="<%=beancart.getCode()%>"
+                                   aria-label="Aumenta quantità">
+                                    +
+                                </a>
+
+                            </td>
+
+                            <td>
+                                € <%=String.format(
+                                        Locale.US,
+                                        "%.2f",
+                                        rowSubtotal
+                                )%>
+                            </td>
+
+                            <td>
+
+                                <a href="<%=request.getContextPath()%>/common/welcome?action=removeAllC&code=<%=beancart.getCode()%>"
+                                   class="cart-action"
+                                   data-action="removeAllC"
+                                   data-code="<%=beancart.getCode()%>">
+                                    Rimuovi
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    <%
+                    }
+                    %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- CARRELLO VUOTO -->
+
+            <p id="cartEmpty"
+               <%=!cartIsEmpty ? "hidden" : ""%>>
+
+                Il carrello è vuoto.
+
+            </p>
+
+
+            <!-- RIEPILOGO CARRELLO -->
+
+            <div id="cartSummary"
+                 <%=cartIsEmpty ? "hidden" : ""%>>
+
+                <p>
+
+                    <strong>
+
+                        Totale:
+                        € <span id="cartTotal">
+
+                            <%=String.format(
+                                    Locale.US,
+                                    "%.2f",
+                                    cart.getTotal()
+                            )%>
+
+                        </span>
+
+                    </strong>
+
+                </p>
+
+                <p>
+
+                    <a href="<%=request.getContextPath()%>/common/welcome?action=clearC"
+                       class="cart-action"
+                       data-action="clearC">
+
+                        Svuota carrello
+
+                    </a>
+
+                </p>
+
+                <form action="<%=request.getContextPath()%>/informationOrder"
+                      method="post">
+
+                    <input type="submit"
+                           value="Procedi all'ordine"
+                           id="processOrder">
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </aside>
+
+
+    <!-- =========================
+         CATALOGO PRODOTTI
+         ========================= -->
+
+    <section id="productfield">
+
+        <div class="product-gallery">
+
+        <%
+        Collection<?> products =
+			(Collection
+			<?>) request.getAttribute(
+                        "products"
+                );
+
+        if (products != null &&
+                !products.isEmpty()) {
+
+            Iterator<?> iterator =
+			products.iterator();
+
+			while (iterator.hasNext()) {
+
+			ProductBean bean =
+			(ProductBean) iterator.next();
 			%>
-			<h2>Cart</h2>
-			<form action="${pageContext.request.contextPath}/informationOrder" method="post">
-			<table border="1">
-				<tr>
-					<th>Name</th>
-					<th>Action</th>
-				</tr>
-				<%
-				List<ProductBean> prodcart = cart.getProducts();
-				for (ProductBean beancart : prodcart) {
-				%>
-				<tr>
-					<td><%=beancart.getName()%></td>
-					<td><a href="welcome?action=deleteC&code=<%=beancart.getCode()%>">Delete from cart</a></td>
-				</tr>
-				<tr>
-				<%
-				}
 
-				if (!prodcart.isEmpty()) {
-				%>
-				<td><input type="submit" value="Procedi all'ordine" id="processOrder">
-				</tr>
-				<%
-				}
-				%>
-			</table>
-			</form>
-		</fieldset>
-		<fieldset class="productfield">
-			<div class="product-gallery">
-				<%
-				Collection<?> products = (Collection<?>) request.getAttribute("products");
-				if (products != null && !products.isEmpty()) {
-					Iterator<?> it = products.iterator();
-					while (it.hasNext()) {
-						ProductBean bean = (ProductBean) it.next();
-				%>
+			<article class="product-card">
 
-				<div class="product-card">
+				<% if (bean.hasImage()) { %>
 
-					<%
-					if (bean.hasImage()) {
-					%>
-						<img alt="<%=bean.getName()%>" class="productImg" src="<%=request.getContextPath()%>/image?action=show&code=<%=bean.getCode()%>">
-					<%
-					} else {
-					%>
-					<img alt="Nessuna Immagine" class="productImg">
-					<%
-					}
-					%>
+					<img alt="<%=bean.getName()%>" class="productImg"
+						src="<%=request.getContextPath()%>/image?action=show&amp;code=<%=bean.getCode()%>">
 
-					<br> <b><%=bean.getName()%></b><br> 
-					<br> <a href="welcome?action=addC&code=<%=bean.getCode()%>" class="flex-bottom-link"><input type="button" class="addcartbutton" value="Aggiungi al carrello"></a>
-					<br> <a href="${pageContext.request.contextPath}/common/welcome?action=read&code=<%=bean.getCode()%>" class="flex-bottom-link"><input type="button" class="addcartbutton" value="Dettagli"></a><br>
-				</div>
+					<% } else { %>
 
-				<%
-				}
-				} else {
-				%>
-				<p>No products available</p>
-				<%
-				}
-				%>
-			</div>
+						<img alt="Nessuna immagine disponibile" class="productImg"
+							src="<%=request.getContextPath()%>/images/Modellini-auto-scala-1-24-da-collezione.jpg">
 
-		</fieldset>
-	</div>
-	<fieldset id="detailsfield">
-	<div>
-	<h2>Details</h2>
-	<%
-		ProductBean product = (ProductBean) request.getAttribute("product");
-		if (product != null) {
-	%>
-	<table border="1">
-		<tr>
-			<th>Code</th>
-			<th>Name</th>
-			<th>Description</th>
-			<th>Price</th>
-			<th>Quantity</th>
-		</tr>
-		<tr>
-			<td><%=product.getCode()%></td>
-			<td><%=product.getName()%></td>
-			<td><%=product.getDescription()%></td>
-			<td><%=product.getPrice()%></td>
-			<td><%=product.getQuantity()%></td>
-		</tr>
-	</table>
-	<%
-	}
-	%>
-	</div>
-	</fieldset>
-	
-	<a href="<%=request.getContextPath()%>/common/logout">Logout</a>
-</body>
-</html>
+						<% } %>
+
+							<b>
+								<%=bean.getName()%>
+							</b>
+
+							<div class="product-actions">
+
+
+								<!-- AGGIUNGI AL CARRELLO -->
+
+								<form action="<%=request.getContextPath()%>/common/welcome" method="get">
+
+									<input type="hidden" name="action" value="addC">
+
+									<input type="hidden" name="code" value="<%=bean.getCode()%>">
+
+									<button type="submit" class="addcartbutton cart-action" data-action="addC"
+										data-code="<%=bean.getCode()%>">
+
+										Aggiungi al carrello
+
+									</button>
+
+								</form>
+
+
+								<!-- DETTAGLI -->
+
+								<form action="<%=request.getContextPath()%>/common/welcome" method="get">
+
+									<input type="hidden" name="action" value="read">
+
+									<input type="hidden" name="code" value="<%=bean.getCode()%>">
+
+									<button type="submit" class="addcartbutton">
+
+										Dettagli
+
+									</button>
+
+								</form>
+
+							</div>
+
+			</article>
+
+			<% } } else { %>
+
+				<p>Nessun prodotto disponibile.</p>
+
+				<% } %>
+
+					</div>
+
+					</section>
+
+					</main>
+
+
+					<!-- =========================
+     DETTAGLI PRODOTTO
+     ========================= -->
+
+					<section id="detailsfield">
+
+						<div id="detailsSection">
+
+							<h2>Details</h2>
+
+							<% ProductBean product=(ProductBean) request.getAttribute( "product" ); if (product !=null)
+								{ %>
+
+								<div class="table-wrapper">
+
+									<table>
+
+										<thead>
+
+											<tr>
+												<th>Code</th>
+												<th>Name</th>
+												<th>Description</th>
+												<th>Price</th>
+												<th>Quantity</th>
+											</tr>
+
+										</thead>
+
+										<tbody>
+
+											<tr>
+
+												<td>
+													<%=product.getCode()%>
+												</td>
+
+												<td>
+													<%=product.getName()%>
+												</td>
+
+												<td>
+													<%=product.getDescription()%>
+												</td>
+
+												<td>
+													€ <%=String.format( Locale.US, "%.2f" , product.getPrice() )%>
+												</td>
+
+												<td>
+													<%=product.getQuantity()%>
+												</td>
+
+											</tr>
+
+										</tbody>
+
+									</table>
+
+								</div>
+
+								<% } else { %>
+
+									<p>
+										Seleziona un prodotto per visualizzarne i dettagli.
+									</p>
+
+									<% } %>
+
+						</div>
+
+					</section>
+
+	</body>
+
+	</html>

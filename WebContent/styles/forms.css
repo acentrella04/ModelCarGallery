@@ -1,0 +1,757 @@
+@charset "UTF-8";
+
+:root {
+	--page-bg: #F0FFFF;
+	--surface: #f9f9f9;
+	--surface-strong: #ffffff;
+	--border: #dddddd;
+	--border-dark: #b8b8b8;
+	--text: #222222;
+	--muted: #666666;
+	--primary: #EE7600;
+	--primary-hover: #FF7F00;
+	--success: #1b5e20;
+	--success-bg: #f1fff2;
+	--error: #b00020;
+	--error-bg: #fff5f5;
+	--shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+/* Tutti i contenitori div restano senza bordo. */
+div {
+	border: none !important;
+}
+
+html {
+	width: 100%;
+	min-height: 100%;
+}
+
+body {
+	width: 100%;
+	min-height: 100%;
+	margin: 0;
+	padding: 0;
+	overflow-x: hidden;
+	background-color: var(--page-bg);
+	color: var(--text);
+	font-family: Arial, Helvetica, sans-serif;
+	line-height: 1.5;
+}
+
+img {
+	display: block;
+	max-width: 100%;
+}
+
+a {
+	color: inherit;
+}
+
+fieldset {
+	min-width: 0;
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+[hidden] {
+	display: none !important;
+}
+
+/* =========================
+   LOGO
+   ========================= */
+
+#logo {
+	width: 100%;
+	margin: 0;
+	padding: 10px;
+	border: none;
+}
+
+#imglogo {
+	width: 100%;
+	height: 500px;
+	object-fit: cover;
+	border-radius: 8px;
+}
+
+/* =========================
+   STRUTTURA PRINCIPALE
+   ========================= */
+
+#maincontent {
+	display: grid;
+	grid-template-columns: 430px minmax(0, 1fr);
+	align-items: start;
+	gap: 12px;
+	width: 100%;
+	padding: 12px;
+}
+
+#navbar {
+	width: 100%;
+	min-height: 500px;
+	height: auto;
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+#productfield,
+.productfield {
+	width: 100%;
+	min-width: 0;
+	min-height: 500px;
+	height: auto;
+	margin: 0;
+	padding: 0;
+	border: none;
+	overflow: visible;
+}
+
+#detailsfield,
+.detailsfield {
+	width: calc(100% - 30px);
+	min-height: 0;
+	height: auto;
+	margin: 40px 15px 25px;
+	padding: 18px;
+	border: none;
+}
+
+#detailsSection {
+	width: 100%;
+	max-width: 100%;
+}
+
+/* =========================
+   LOGIN E NAVBAR
+   ========================= */
+
+#loginForm {
+	width: 100%;
+}
+
+#divlogin,
+#divnavbar {
+	width: 100%;
+	max-width: 100%;
+	margin-bottom: 10px;
+	padding: 10px;
+	border: none;
+	border-radius: 0;
+	background-color: transparent;
+	box-shadow: none;
+}
+
+#divlogin {
+	font-size: 16px;
+}
+
+#divlogin h3 {
+	margin: 0 0 8px;
+	font-size: 18px;
+}
+
+#loginForm label {
+	display: block;
+	margin-top: 8px;
+	margin-bottom: 4px;
+	font-weight: 600;
+}
+
+#loginForm input[type="email"],
+#loginForm input[type="password"] {
+	width: 100%;
+	margin: 0 0 10px;
+}
+
+.login-actions {
+	display: flex;
+	width: 100%;
+	gap: 8px;
+	margin-top: 8px;
+}
+
+#loginbutton,
+#regbutton {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: 1;
+	width: auto;
+	min-height: 40px;
+	margin: 0;
+	padding: 8px 10px;
+	border: none;
+	border-radius: 5px;
+	background-color: var(--primary);
+	color: #ffffff;
+	font-family: inherit;
+	font-size: 16px;
+	line-height: normal;
+	text-align: center;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+#loginbutton:hover,
+#regbutton:hover {
+	background-color: var(--primary-hover);
+}
+
+#divnavbar {
+	line-height: 1.2;
+}
+
+#divnavbar>b {
+	display: inline;
+	padding: 0;
+}
+
+.scale-list {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	margin-top: 8px;
+}
+
+.scale-list span {
+	display: block;
+	font-weight: bold;
+	line-height: 1.25;
+}
+
+/* =========================
+   CAROSELLO
+   ========================= */
+
+#carosellonews {
+	display: flex;
+	width: 100%;
+	gap: 10px;
+	margin-bottom: 10px;
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	scrollbar-width: thin;
+}
+
+#carosellonews img {
+	width: 100%;
+	height: auto;
+	flex-shrink: 0;
+	scroll-snap-align: start;
+	border-radius: 6px;
+}
+
+#imgnews,
+#imgnews2 {
+	width: 100%;
+}
+
+/* =========================
+   GALLERIA PRODOTTI
+   ========================= */
+
+.product-gallery {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: stretch;
+	justify-content: flex-start;
+	gap: 10px;
+	width: 100%;
+	min-width: 0;
+	padding: 8px;
+}
+
+.product-card {
+	display: flex;
+	flex-direction: column;
+	flex: 0 1 300px;
+	width: 300px;
+	min-width: 0;
+	max-width: 300px;
+	min-height: 430px;
+	margin: 0;
+	padding: 15px;
+	overflow: visible;
+	border: none;
+	border-radius: 8px;
+	background-color: var(--surface);
+	box-shadow: var(--shadow);
+	text-align: center;
+}
+
+.productImg {
+	width: 100%;
+	height: 180px;
+	object-fit: contain;
+	object-position: center;
+	padding: 5px;
+	border-radius: 5px;
+	background-color: var(--surface-strong);
+}
+
+.product-card b {
+	margin-top: 12px;
+	overflow-wrap: anywhere;
+}
+
+.product-actions {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	gap: 10px;
+	margin-top: auto;
+}
+
+.product-actions a,
+.flex-bottom-link {
+	display: block;
+	width: 100%;
+	text-decoration: none;
+}
+
+.flex-bottom-link {
+	margin-top: auto;
+}
+
+.addcartbutton {
+	width: 100%;
+	min-height: 40px;
+	margin: 0;
+	padding: 10px;
+	border: none;
+	border-radius: 5px;
+	background-color: var(--primary);
+	color: #ffffff;
+	font-size: 16px;
+	cursor: pointer;
+}
+
+.addcartbutton:hover {
+	background-color: var(--primary-hover);
+}
+
+/* =========================
+   FORM GENERALI
+   ========================= */
+
+form {
+	max-width: 100%;
+}
+
+form label {
+	font-weight: 600;
+}
+
+form input,
+form select,
+form textarea,
+form button {
+	max-width: 100%;
+	font-family: inherit;
+	font-size: 16px;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form input[type="number"],
+form input[type="date"],
+form select,
+form textarea {
+	width: 100%;
+	padding: 9px;
+	border: 1px solid var(--border-dark);
+	border-radius: 5px;
+	background-color: var(--surface-strong);
+}
+
+form textarea {
+	resize: vertical;
+}
+
+form input[type="submit"],
+form input[type="button"],
+form button {
+	min-height: 40px;
+}
+
+#registrationForm {
+	width: calc(100% - 30px);
+	max-width: 500px;
+	margin: 25px auto;
+}
+
+#registrationForm fieldset {
+	padding: 20px;
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	background-color: var(--surface);
+	box-shadow: var(--shadow);
+}
+
+#registrationForm input[type="email"],
+#registrationForm input[type="password"] {
+	width: 100%;
+}
+
+#orderForm {
+	width: calc(100% - 30px);
+	max-width: 700px;
+	margin: 20px auto;
+	padding: 20px;
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	background-color: var(--surface);
+	box-shadow: var(--shadow);
+}
+
+#orderForm>input[type="text"],
+#orderForm>input[type="email"],
+#orderForm>input[type="number"],
+#orderForm>select {
+	width: 100%;
+	margin: 5px 0 15px;
+}
+
+#formAdmin,
+#updateProductForm {
+	width: 100%;
+	max-width: 650px;
+	padding: 18px;
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	background-color: var(--surface);
+}
+
+#formAdmin input[type="text"],
+#formAdmin input[type="number"],
+#formAdmin textarea,
+#updateProductForm input[type="text"],
+#updateProductForm input[type="number"],
+#updateProductForm textarea {
+	width: 100%;
+	margin: 5px 0 12px;
+}
+
+/* =========================
+   PAGAMENTO
+   ========================= */
+
+#paymentSection {
+	width: 100%;
+	margin-top: 25px;
+	padding: 20px;
+	border: 1px solid #cccccc;
+	border-radius: 8px;
+	background-color: #f7f7f7;
+}
+
+#paymentSection legend {
+	padding: 0 10px;
+	font-weight: bold;
+}
+
+#paymentSection .form-group {
+	width: 100%;
+	margin-bottom: 15px;
+}
+
+#paymentSection .form-group label {
+	display: block;
+	margin-bottom: 5px;
+}
+
+#paymentSection .form-group input {
+	width: 100%;
+	max-width: none;
+}
+
+#paymentSection .payment-row {
+	display: flex;
+	width: 100%;
+	gap: 20px;
+}
+
+#paymentSection .payment-row .form-group {
+	flex: 1;
+	min-width: 0;
+}
+
+/* =========================
+   TABELLE
+   ========================= */
+
+.table-wrapper {
+	width: 100%;
+	margin: 10px 0;
+	overflow-x: auto;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	background-color: var(--surface-strong);
+}
+
+table th,
+table td {
+	padding: 9px;
+	border: 1px solid var(--border-dark);
+	overflow-wrap: anywhere;
+	text-align: left;
+	vertical-align: middle;
+}
+
+table th {
+	background-color: #eeeeee;
+}
+
+#producttable {
+	width: 100%;
+	max-width: 500px;
+	height: auto;
+	border-spacing: 0;
+	background-color: transparent;
+	overflow-wrap: break-word;
+}
+
+/* =========================
+   CARRELLO E AJAX
+   ========================= */
+
+.table-wrapper {
+	width: 100%;
+	max-width: 100%;
+	overflow-x: scroll;
+	overflow-y: hidden;
+	scrollbar-gutter: stable;
+	-webkit-overflow-scrolling: touch;
+}
+
+#cartTable {
+	width: max-content;
+	min-width: 650px;
+	table-layout: auto;
+	white-space: nowrap;
+}
+
+#cartTable th:first-child,
+#cartTable td:first-child {
+	min-width: 260px;
+	white-space: normal;
+}
+
+.table-wrapper::-webkit-scrollbar {
+	height: 12px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+	background: #e5e5e5;
+	border-radius: 6px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+	background: #888888;
+	border-radius: 6px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+	background: #555555;
+}
+
+
+#cartContainer {
+	width: 100%;
+	max-width: 100%;
+}
+
+#cartTable {
+	width: 100%;
+}
+
+.cart-quantity-controls {
+	white-space: nowrap;
+	text-align: center;
+}
+
+.cart-quantity-controls a {
+	display: inline-block;
+	min-width: 34px;
+	margin: 0 4px;
+	padding: 4px 9px;
+	border: 1px solid #cccccc;
+	border-radius: 4px;
+	background-color: #ffffff;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.cart-quantity-controls a:hover {
+	background-color: #eeeeee;
+}
+
+#processOrder {
+	width: 100%;
+	min-height: 40px;
+	padding: 8px;
+	border: none;
+	border-radius: 5px;
+	background-color: var(--primary);
+	color: #ffffff;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+#processOrder:hover {
+	background-color: var(--primary-hover);
+}
+
+.cart-message {
+	min-height: 20px;
+	margin: 5px 0;
+	font-size: 14px;
+}
+
+.cart-message-success {
+	color: var(--success);
+}
+
+.cart-message-error {
+	color: var(--error);
+	font-weight: bold;
+}
+
+/* =========================
+   ORDINI
+   ========================= */
+
+.order-card {
+	width: calc(100% - 30px);
+	max-width: 1000px;
+	margin: 20px auto;
+	padding: 20px;
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	background-color: var(--surface);
+	box-shadow: var(--shadow);
+}
+
+.order-card h2,
+.order-card h3 {
+	margin-top: 0;
+}
+
+.order-filters {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(180px, 1fr));
+	gap: 12px;
+	width: calc(100% - 30px);
+	max-width: 1000px;
+	margin: 20px auto;
+	padding: 16px;
+	border: 1px solid var(--border);
+	border-radius: 8px;
+	background-color: var(--surface);
+}
+
+.order-filters .filter-actions {
+	display: flex;
+	align-items: end;
+	gap: 8px;
+}
+
+/* =========================
+   VALIDAZIONE
+   ========================= */
+
+.field-error {
+	display: block;
+	margin-top: 4px;
+	margin-bottom: 8px;
+	color: var(--error);
+	font-size: 14px;
+}
+
+.input-invalid {
+	border: 2px solid var(--error) !important;
+	background-color: var(--error-bg) !important;
+}
+
+.input-valid {
+	border: 2px solid var(--success) !important;
+}
+
+.form-message {
+	margin: 10px 0;
+	padding: 10px;
+	border-radius: 5px;
+}
+
+.form-message-error {
+	border: 1px solid var(--error);
+	background-color: var(--error-bg);
+	color: var(--error);
+}
+
+.form-message-success {
+	border: 1px solid var(--success);
+	background-color: var(--success-bg);
+	color: var(--success);
+}
+
+.availability-message {
+	display: block;
+	min-height: 20px;
+	margin-top: 5px;
+	margin-bottom: 8px;
+	font-size: 14px;
+}
+
+.availability-message.checking {
+	color: var(--muted);
+}
+
+.availability-message.available {
+	color: var(--success);
+	font-weight: bold;
+}
+
+.availability-message.not-available {
+	color: var(--error);
+	font-weight: bold;
+}
+
+/* =========================
+   UTILITÀ
+   ========================= */
+
+.container {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.column {
+	flex: 1 1 25%;
+	padding: 20px;
+}
+
+
+/* Contenitori principali senza i bordi predefiniti dei fieldset. */
+#logo,
+#navbar,
+#productfield,
+.productfield,
+#detailsfield,
+.detailsfield {
+	border: none !important;
+	outline: none;
+}

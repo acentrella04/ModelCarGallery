@@ -1,98 +1,181 @@
-<%@ page language="java"
-    contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"
-    import="java.util.*,it.unisa.modelcargallery.model.*"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
+	import="java.util.*,it.unisa.modelcargallery.model.*" %>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Ordine completato</title>
-</head>
+	<!DOCTYPE html>
+	<html lang="it">
 
-<body>
+	<head>
 
-<%
-OrderBean order =
-    (OrderBean) request.getAttribute("order");
+		<meta charset="UTF-8">
 
-if (order != null) {
-%>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<h1>Ordine effettuato con successo</h1>
+		<title>Ordine completato</title>
 
-<p>
-    Numero ordine:
-    <%=order.getId()%>
-</p>
+		<link rel="stylesheet" href="<%=request.getContextPath()%>/styles/forms.css">
 
-<p>
-    Cliente:
-    <%=order.getName()%>
-    <%=order.getSurname()%>
-</p>
+		<link rel="stylesheet" href="<%=request.getContextPath()%>/styles/responsive.css">
 
-<p>
-    Indirizzo:
-    <%=order.getAddress()%>,
-    <%=order.getNumberAddress()%>
-</p>
+	</head>
 
-<p>
-    Metodo di pagamento:
-    <%=order.getPaymentMethod()%>
-</p>
+	<body>
 
-<table border="1">
+		<header id="logo">
 
-    <tr>
-        <th>Prodotto</th>
-        <th>Prezzo unitario</th>
-        <th>Quantità</th>
-        <th>Subtotale</th>
-    </tr>
+			<a href="<%=request.getContextPath()%>/common/welcome">
 
-    <%
-    for (OrderItemBean item : order.getItems()) {
-    %>
+				<img id="imglogo" src="<%=request.getContextPath()%>/images/Gemini_Generated_Image_es7nd4es7nd4es7n.png"
+					alt="Model Car Gallery">
 
-    <tr>
-        <td><%=item.getProductName()%></td>
+			</a>
 
-        <td>
-            € <%=item.getUnitPrice()%>
-        </td>
+		</header>
 
-        <td><%=item.getQuantity()%></td>
+		<main>
 
-        <td>
-            € <%=item.getSubtotal()%>
-        </td>
-    </tr>
+			<% OrderBean order=(OrderBean) request.getAttribute("order"); if (order !=null) { %>
 
-    <%
-    }
-    %>
+				<section class="order-card">
 
-</table>
+					<h1>Ordine effettuato con successo</h1>
 
-<h2>
-    Totale: € <%=order.getTotal()%>
-</h2>
+					<p>
+						Il tuo ordine è stato registrato correttamente.
+					</p>
 
-<%
-} else {
-%>
+					<p>
+						<strong>Numero ordine:</strong>
+						<%=order.getId()%>
+					</p>
 
-<p>Ordine non disponibile.</p>
+					<% if (order.getOrderDate() !=null) { %>
 
-<%
-}
-%>
+						<p>
+							<strong>Data:</strong>
+							<%=order.getOrderDate()%>
+						</p>
 
-<a href="<%=request.getContextPath()%>/common/welcome">
-    Torna alla pagina principale
-</a>
+						<% } %>
 
-</body>
-</html>
+							<p>
+								<strong>Cliente:</strong>
+								<%=order.getName()%>
+									<%=order.getSurname()%>
+							</p>
+
+							<p>
+								<strong>Email:</strong>
+								<%=order.getMail()%>
+							</p>
+
+							<p>
+								<strong>Indirizzo di spedizione:</strong>
+								<%=order.getAddress()%>,
+									<%=order.getNumberAddress()%>
+							</p>
+
+							<p>
+								<strong>Metodo di pagamento:</strong>
+								<%=order.getPaymentMethod()%>
+							</p>
+
+				</section>
+
+
+				<section class="order-card">
+
+					<h2>Prodotti acquistati</h2>
+
+					<div class="table-wrapper">
+
+						<table>
+
+							<thead>
+
+								<tr>
+									<th>Prodotto</th>
+									<th>Prezzo unitario</th>
+									<th>Quantità</th>
+									<th>Subtotale</th>
+								</tr>
+
+							</thead>
+
+							<tbody>
+
+								<% for (OrderItemBean item : order.getItems()) { %>
+
+									<tr>
+
+										<td>
+											<%=item.getProductName()%>
+										</td>
+
+										<td>
+											€ <%=String.format( Locale.US, "%.2f" , item.getUnitPrice() )%>
+										</td>
+
+										<td>
+											<%=item.getQuantity()%>
+										</td>
+
+										<td>
+											€ <%=String.format( Locale.US, "%.2f" , item.getSubtotal() )%>
+										</td>
+
+									</tr>
+
+									<% } %>
+
+							</tbody>
+
+						</table>
+
+					</div>
+
+					<h2>
+						Totale ordine:
+						€ <%=String.format( Locale.US, "%.2f" , order.getTotal() )%>
+					</h2>
+
+				</section>
+
+
+				<nav class="order-card">
+
+					<a href="<%=request.getContextPath()%>/common/orders">
+						Visualizza i miei ordini
+					</a>
+
+					<br><br>
+
+					<a href="<%=request.getContextPath()%>/common/welcome">
+						Torna alla pagina principale
+					</a>
+
+				</nav>
+
+				<% } else { %>
+
+					<section class="order-card">
+
+						<h1>Ordine non disponibile</h1>
+
+						<p>
+							Non è stato possibile recuperare le informazioni
+							relative all’ordine.
+						</p>
+
+						<a href="<%=request.getContextPath()%>/common/welcome">
+							Torna alla pagina principale
+						</a>
+
+					</section>
+
+					<% } %>
+
+		</main>
+
+	</body>
+
+	</html>
