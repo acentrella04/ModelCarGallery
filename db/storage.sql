@@ -3,6 +3,8 @@ CREATE DATABASE storage;
 USE storage;
 
 DROP TABLE IF EXISTS product;
+DROP TABLE IF EXISTS order_items;
+DROP TABLE IF EXISTS orders;
 
 CREATE TABLE product (	
 	code int PRIMARY KEY AUTO_INCREMENT,
@@ -21,15 +23,45 @@ CREATE TABLE users(
     role VARCHAR(20) DEFAULT 'user'
 );
 
-CREATE TABLE orders(
-	id INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE orders (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+
+    user_id INT NOT NULL,
+
+    order_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
     name VARCHAR(25) NOT NULL,
     surname VARCHAR(30) NOT NULL,
-    address VARCHAR(40) NOT NULL,
-    numberaddress INT default 0 NOT NULL,
+    address VARCHAR(80) NOT NULL,
+    numberaddress INT NOT NULL,
+
+    total DECIMAL(10,2) NOT NULL,
+
+    mail VARCHAR(100) NOT NULL,
+
+    payment_method VARCHAR(20) NOT NULL,
+    payment_last4 CHAR(4) DEFAULT NULL,
+
+    status VARCHAR(20) NOT NULL DEFAULT 'CONFIRMED',
+
+    FOREIGN KEY (user_id)
+        REFERENCES users(id)
+);
+
+CREATE TABLE order_items (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+
+    order_id INT NOT NULL,
+
+    product_code INT NOT NULL,
+    product_name VARCHAR(100) NOT NULL,
+
     unit_price DECIMAL(10,2) NOT NULL,
     quantity INT NOT NULL,
-    mail VARCHAR(30) NOT NULL
+
+    FOREIGN KEY (order_id)
+        REFERENCES orders(id)
+        ON DELETE CASCADE
 );
 
 INSERT INTO product(name,description,price,quantity,immagine_copertina,mime_type) VALUES
