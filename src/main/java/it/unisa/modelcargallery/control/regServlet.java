@@ -12,8 +12,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.sql.DataSource;
 
@@ -39,53 +41,16 @@ public class regServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		List<String> errors = new ArrayList<>();
-        String email = request.getParameter("mail");
-        String pwd = request.getParameter("pwd");
-        String role= request.getParameter("role");
-        email = validateField(email, "email", errors);
-        pwd = validateField(pwd, "password", errors);
-        role= validateField(role,"role",errors);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/product");
-        if (!errors.isEmpty()) {
-            request.setAttribute("errors", errors);
-            dispatcher.forward(request, response);
-            return;
-        }
-        try {
-            DataSource ds = (DataSource) getServletContext().getAttribute("DataSource");
-            UserDaoImpl userDao = new UserDaoImpl(ds);
-            UserBean existingUser = userDao.doRetrieveByUsername(email);
+    @Override
+    protected void doGet(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
 
-            if (existingUser != null) {
-                errors.add("Email già registrata");
-                request.setAttribute("errors", errors);
-
-                dispatcher = request.getRequestDispatcher("/WEB-INF/view/Setup.jsp");
-                dispatcher.forward(request, response);
-                return;
-            }
-            UserBean user=new UserBean();
-            user.setUsername(email);
-            HttpSession session = request.getSession();
-            session.setAttribute("userMail", user.getUsername());
-            String digiset = regServlet.toDigiset(pwd);
-            user.setPasswordHash(digiset);
-            user.setRole(role);
-            userDao.doSave(user);
-            // Utente normale
-            CartBean cart = (CartBean) request.getSession().getAttribute("cart");
-            if (cart == null) {
-               cart = new CartBean();
-               request.getSession().setAttribute("cart", cart);
-              }
-            response.sendRedirect(request.getContextPath() + "/common/welcome");
-        }catch (Exception e) {
-            throw new ServletException("Errore durante la registrazione", e);
-        }
-	}
+        request.getRequestDispatcher(
+                "/WEB-INF/view/Setup.jsp"
+        ).forward(request, response);
+    }
        
         
         public static String toDigiset(String password) {
@@ -111,12 +76,129 @@ public class regServlet extends HttpServlet {
             return value.trim();
         }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
+    	@Override
+    	protected void doPost(
+    	        HttpServletRequest request,
+    	        HttpServletResponse response)
+    	        throws ServletException, IOException {
 
+    	    request.setCharacterEncoding("UTF-8");
+
+    	    List<String> errors = new ArrayList<String>();
+
+    	    String email = request.getParameter("mail");
+    	    String password = request.getParameter("pwd");
+
+    	    email = validateField(email, "email", errors);
+    	    password = validateField(password, "password", errors);
+
+    	    /*
+    	     * Se i campi non sono validi, torno alla pagina
+    	     * di registrazione e mostro gli errori.
+    	     */
+    	    if (!errors.isEmpty()) {
+
+    	        request.setAttribute("errors", errors);
+    	        request.setAttribute("mailValue", email);
+
+    	        RequestDispatcher dispatcher =
+    	                request.getRequestDispatcher(
+    	                        "/WEB-INF/view/Setup.jsp"
+    	                );
+
+    	        dispatcher.forward(request, response);
+    	        return;
+    	    }
+
+    	    try {
+    	        DataSource ds =
+    	                (DataSource) getServletContext()
+    	                        .getAttribute("DataSource");
+
+    	        UserDaoImpl userDao =
+    	                new UserDaoImpl(ds);
+
+    	        UserBean existingUser =
+    	                userDao.doRetrieveByUsername(email);
+
+    	        if (existingUser != null) {
+
+    	            errors.add(
+    	                    "Esiste già un account registrato con questa email."
+    	            );
+
+    	            request.setAttribute("errors", errors);
+    	            request.setAttribute("mailValue", email);
+
+    	            request.getRequestDispatcher(
+    	                    "/WEB-INF/view/Setup.jsp"
+    	            ).forward(request, response);
+
+    	            return;
+    	        }
+
+    	        UserBean user = new UserBean();
+
+    	        user.setUsername(email);
+
+    	        user.setPasswordHash(
+    	                loginServlet.toDigiset(password)
+    	        );
+
+    	        /*
+    	         * Il ruolo non deve essere letto dal form.
+    	         */
+    	        user.setRole("user");
+
+    	        userDao.doSave(user);
+    	        
+    	        /*
+    	         * Recupero nuovamente l'utente perché il database
+    	         * ha generato il suo ID.
+    	         */
+    	        UserBean registeredUser =
+    	                userDao.doRetrieveByUsername(email);
+
+    	        if (registeredUser == null) {
+    	            throw new ServletException(
+    	                    "Registrazione completata, ma impossibile recuperare l'utente"
+    	            );
+    	        }
+
+    	        HttpSession session = request.getSession();
+
+    	        session.setAttribute("user", registeredUser);
+    	        session.setAttribute("userMail", registeredUser.getUsername());
+    	        session.setAttribute("role", registeredUser.getRole());
+
+    	        session.setAttribute(
+    	                "authToken",
+    	                UUID.randomUUID().toString()
+    	        );
+
+    	        /*
+    	         * Mantiene l'eventuale carrello già creato
+    	         * mentre l'utente non era registrato.
+    	         */
+    	        CartBean cart =
+    	                (CartBean) session.getAttribute("cart");
+
+    	        if (cart == null) {
+    	            cart = new CartBean();
+    	            session.setAttribute("cart", cart);
+    	        }
+
+    	        response.sendRedirect(
+    	                request.getContextPath() + "/common/welcome"
+    	        );
+
+    	        return;
+    	    } catch (SQLException e) {
+
+    	        throw new ServletException(
+    	                "Errore durante la registrazione",
+    	                e
+    	        );
+    	    }
+    	}
 }
