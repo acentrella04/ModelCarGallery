@@ -1,0 +1,33 @@
+# File Java compilati
+*.class
+
+# Cartelle generate
+build/
+bin/
+target/
+out/
+
+# Log e file temporanei
+*.log
+logs/
+temp/
+work/
+
+# Pacchetti esportati
+*.war
+*.ear
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor
+.metadata/
+.idea/
+.vscode/
+*.iml
+
+# Credenziali database locali
+WebContent/META-INF/context.xml
+src/main/webapp/META-INF/context.xml
