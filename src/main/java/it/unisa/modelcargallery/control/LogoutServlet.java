@@ -5,22 +5,25 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Servlet implementation class Logout
  */
-@WebServlet("/admin/logout")
-public class adminLogout extends HttpServlet {
+@WebServlet({"/admin/logout","/common/logout"})
+public class LogoutServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
-		String role = (String) request.getSession().getAttribute("role");
-		if (role != null){	
-		    	request.getSession().invalidate();
-		}
-		response.sendRedirect(request.getContextPath() + "/index");	
+		HttpSession session =
+	            request.getSession(false);
+
+	        if (session != null) {
+	            session.invalidate();
+	        }
+		response.sendRedirect(request.getContextPath() + "/product");	
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 

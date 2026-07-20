@@ -1,4 +1,4 @@
-package it.unisa.modelcargallery.control.filter;
+package it.unisa.modelcargallery.filter;
 
 import java.io.IOException;
 
@@ -13,11 +13,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebFilter(urlPatterns = {
-    "/common/*",
-    "/ProcessOrder"
-})
-public class UserAccessFilter implements Filter {
+@WebFilter("/admin/*")
+public class AdminAccessFilter implements Filter {
 
     @Override
     public void doFilter(
@@ -39,6 +36,7 @@ public class UserAccessFilter implements Filter {
         String authToken = null;
 
         if (session != null) {
+
             user =
                 (UserBean) session.getAttribute("user");
 
@@ -56,11 +54,11 @@ public class UserAccessFilter implements Filter {
             return;
         }
 
-        if (!"user".equalsIgnoreCase(user.getRole())) {
+        if (!"admin".equalsIgnoreCase(user.getRole())) {
 
             response.sendError(
                 HttpServletResponse.SC_FORBIDDEN,
-                "Accesso non autorizzato"
+                "Area riservata all'amministratore"
             );
 
             return;

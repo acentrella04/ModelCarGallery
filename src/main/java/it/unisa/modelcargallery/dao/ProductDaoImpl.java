@@ -46,7 +46,50 @@ public class ProductDaoImpl implements ProductDao {
             return rowsUpdated != 0;
         }
     }
-    
+    @Override
+    public synchronized void doUpdate(ProductBean product)
+            throws SQLException {
+
+        String updateSQL =
+            "UPDATE product SET " +
+            "name = ?, " +
+            "description = ?, " +
+            "price = ?, " +
+            "quantity = ? " +
+            "WHERE code = ?";
+
+        try (Connection connection = ds.getConnection();
+             PreparedStatement preparedStatement =
+                 connection.prepareStatement(updateSQL)) {
+
+            preparedStatement.setString(
+                1,
+                product.getName()
+            );
+
+            preparedStatement.setString(
+                2,
+                product.getDescription()
+            );
+
+            preparedStatement.setFloat(
+                3,
+                product.getPrice()
+            );
+
+            preparedStatement.setInt(
+                4,
+                product.getQuantity()
+            );
+
+            preparedStatement.setInt(
+                5,
+                product.getCode()
+            );
+
+            preparedStatement.executeUpdate();
+        }
+    }
     @Override
     public synchronized ProductBean doRetrieveByKey(int code) throws SQLException {
         ProductBean bean = new ProductBean();

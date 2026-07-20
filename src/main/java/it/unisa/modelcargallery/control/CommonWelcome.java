@@ -3,6 +3,11 @@ package it.unisa.modelcargallery.control;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
+import it.unisa.modelcargallery.dao.ProductDao;
+import it.unisa.modelcargallery.dao.ProductDaoImpl;
+import it.unisa.modelcargallery.model.CartBean;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -10,127 +15,170 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
-
-import it.unisa.modelcargallery.dao.ProductDao;
-import it.unisa.modelcargallery.dao.ProductDaoImpl;
-import it.unisa.modelcargallery.model.CartBean;
-import it.unisa.modelcargallery.model.ProductBean;
 
 @WebServlet("/common/welcome")
 public class CommonWelcome extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private ProductDao productDao;
+    private ProductDao productDao;
 
-	@Override
-	public void init(ServletConfig servletConfig) throws ServletException {
-		super.init(servletConfig);
-		DataSource ds = (DataSource) getServletContext().getAttribute("DataSource");
-		if (ds == null) {
-			throw new ServletException("DataSource non disponibile nel contesto");
-		}
-		productDao = new ProductDaoImpl(ds);
-	}
+    @Override
+    public void init(ServletConfig servletConfig)
+            throws ServletException {
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		CartBean cart = (CartBean) request.getSession().getAttribute("cart");
-		if (cart == null) {
-			cart = new CartBean();
-			request.getSession().setAttribute("cart", cart);
-		}
-		String action = request.getParameter("action");
-		processAction(request, cart);
-		// Salva il carrello aggiornato in sessione
-		request.getSession().setAttribute("cart", cart);
-		/*
-	     * Dopo aver aggiunto o eliminato un prodotto,
-	     * ricarica la servlet senza i parametri action e code.
-	     */
-		if ("addC".equalsIgnoreCase(action) || "deleteC".equalsIgnoreCase(action)) {
+        super.init(servletConfig);
 
-	        response.sendRedirect(request.getContextPath() + "/common/welcome");
-	        return;
-	    }
-		// Carica la lista di prodotti (eventualmente aggiornata) nella richiesta per la vista
-		loadProducList(request);
-		
-		RequestDispatcher dispatcher = getServletContext().
-				getRequestDispatcher("/WEB-INF/view/common/welcomeCommon.jsp");
-		dispatcher.forward(request, response);
-	}
+        DataSource ds =
+                (DataSource) getServletContext()
+                        .getAttribute("DataSource");
 
-	private void processAction(HttpServletRequest request, CartBean cart) {
-		String action = request.getParameter("action");
-		try {
-			if (action != null) {
-				if (action.equalsIgnoreCase("addC")) {
-					addProductToCart(request, cart);
-				} else if (action.equalsIgnoreCase("deleteC")) {
-					removeProductFromCart(request, cart);
-				} else if (action.equalsIgnoreCase("read")) {
-					readSingleProduct(request);
-				} else if (action.equalsIgnoreCase("delete")) {
-					deleteProduct(request);
-				} else if (action.equalsIgnoreCase("insert")) {
-					insertProduct(request);
-				}
-			}
-		} catch (SQLException e) {
-			System.err.println("Error:" + e.getMessage());
-		}
-	}
+        if (ds == null) {
+            throw new ServletException(
+                    "DataSource non disponibile nel contesto"
+            );
+        }
 
-	private void insertProduct(HttpServletRequest request) throws SQLException {
-		String name = request.getParameter("name");
-		String description = request.getParameter("description");
-		float price = Float.parseFloat(request.getParameter("price"));
-		int quantity = Integer.parseInt(request.getParameter("quantity"));
-		ProductBean product = new ProductBean();
-		product.setName(name);
-		product.setDescription(description);
-		product.setPrice(price);
-		product.setQuantity(quantity);
-		productDao.doSave(product);
-	}
+        productDao = new ProductDaoImpl(ds);
+    }
 
-	private void deleteProduct(HttpServletRequest request) throws SQLException {
-		int code = Integer.parseInt(request.getParameter("code"));
-		productDao.doDelete(code);
-	}
+    @Override
+    protected void doGet(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
 
-	private void readSingleProduct(HttpServletRequest request) throws SQLException {
-		int code = Integer.parseInt(request.getParameter("code"));
-		request.setAttribute("product", productDao.doRetrieveByKey(code));
-	}
+        CartBean cart =
+                (CartBean) request.getSession()
+                        .getAttribute("cart");
 
-	private void removeProductFromCart(HttpServletRequest request, CartBean cart) 
-			throws SQLException {
-		int code = Integer.parseInt(request.getParameter("code"));
-		cart.deleteProduct(productDao.doRetrieveByKey(code));
-	}
+        if (cart == null) {
+            cart = new CartBean();
 
-	private void addProductToCart(HttpServletRequest request, CartBean cart) 
-			throws SQLException {
-		int code = Integer.parseInt(request.getParameter("code"));
-		cart.addProduct(productDao.doRetrieveByKey(code));
-		
-	}
-	
-	private void loadProducList(HttpServletRequest request) {
-		String sort = request.getParameter("sort");
-		try {
-			request.setAttribute("products", productDao.doRetrieveAll(sort));
-		} catch (SQLException e) {
-			System.err.println("Error:" + e.getMessage());
-		}
-	}
+            request.getSession()
+                    .setAttribute("cart", cart);
+        }
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		doGet(request, response);
-	}
+        String action = request.getParameter("action");
 
+        processAction(request, cart);
+
+        request.getSession()
+                .setAttribute("cart", cart);
+
+        if ("addC".equalsIgnoreCase(action)
+                || "deleteC".equalsIgnoreCase(action)
+                || "removeAllC".equalsIgnoreCase(action)
+                || "clearC".equalsIgnoreCase(action)) {
+
+            response.sendRedirect(
+                    request.getContextPath()
+                            + "/common/welcome"
+            );
+
+            return;
+        }
+
+        loadProductList(request);
+
+        RequestDispatcher dispatcher =
+                request.getRequestDispatcher(
+                        "/WEB-INF/view/common/welcomeCommon.jsp"
+                );
+
+        dispatcher.forward(request, response);
+    }
+
+    private void processAction(
+            HttpServletRequest request,
+            CartBean cart)
+            throws ServletException {
+
+        String action = request.getParameter("action");
+
+        if (action == null) {
+            return;
+        }
+
+        try {
+            if ("addC".equalsIgnoreCase(action)) {
+
+                int code = Integer.parseInt(
+                        request.getParameter("code")
+                );
+
+                cart.addProduct(
+                        productDao.doRetrieveByKey(code)
+                );
+
+            } else if ("deleteC".equalsIgnoreCase(action)) {
+
+                int code = Integer.parseInt(
+                        request.getParameter("code")
+                );
+
+                cart.deleteOneProduct(code);
+
+            } else if ("removeAllC".equalsIgnoreCase(action)) {
+
+                int code = Integer.parseInt(
+                        request.getParameter("code")
+                );
+
+                cart.deleteAllProducts(code);
+
+            } else if ("clearC".equalsIgnoreCase(action)) {
+
+                cart.clearCart();
+
+            } else if ("read".equalsIgnoreCase(action)) {
+
+                int code = Integer.parseInt(
+                        request.getParameter("code")
+                );
+
+                request.setAttribute(
+                        "product",
+                        productDao.doRetrieveByKey(code)
+                );
+            }
+
+        } catch (SQLException | NumberFormatException e) {
+
+            throw new ServletException(
+                    "Errore durante la gestione del prodotto",
+                    e
+            );
+        }
+    }
+
+    private void loadProductList(
+            HttpServletRequest request)
+            throws ServletException {
+
+        String sort = request.getParameter("sort");
+
+        try {
+            request.setAttribute(
+                    "products",
+                    productDao.doRetrieveAll(sort)
+            );
+
+        } catch (SQLException e) {
+
+            throw new ServletException(
+                    "Errore nel recupero dei prodotti",
+                    e
+            );
+        }
+    }
+
+    @Override
+    protected void doPost(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        doGet(request, response);
+    }
 }

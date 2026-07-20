@@ -76,7 +76,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public synchronized boolean doDelete(int id) throws SQLException {
-        String deleteSQL = "DELETE FROM " + TABLE_NAME + " WHERE code = ?";
+        String deleteSQL = "DELETE FROM " + TABLE_NAME + " WHERE id  = ?";
         try (Connection connection = ds.getConnection();
         		PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
             preparedStatement.setInt(1, id);
@@ -99,7 +99,7 @@ public class UserDaoImpl implements UserDao {
                 UserBean bean = new UserBean();
                 bean.setId(rs.getInt("id"));
                 bean.setUsername(rs.getString("username"));
-                bean.setPasswordHash("password_hash");
+                bean.setPasswordHash(rs.getString("password_hash"));
                 bean.setRole(rs.getString("role"));
                 products.add(bean);
             }

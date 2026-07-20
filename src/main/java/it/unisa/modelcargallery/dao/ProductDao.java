@@ -12,6 +12,8 @@ public interface ProductDao {
 	public boolean doUpdateImage(ProductBean product) throws SQLException;
 
 	public boolean doDelete(int code) throws SQLException;
+	
+	void doUpdate(ProductBean product) throws SQLException;
 
 	public ProductBean doRetrieveByKey(int code) throws SQLException;
 	

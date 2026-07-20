@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import it.unisa.modelcargallery.dao.ProductDao;
 import it.unisa.modelcargallery.dao.ProductDaoImpl;
 import it.unisa.modelcargallery.model.ProductBean;
+import it.unisa.modelcargallery.model.UserBean;
 
 @WebServlet("/image")
 @MultipartConfig(maxFileSize = 5 * 1024 * 1024, // max 5 MB per file
@@ -21,7 +22,7 @@ public class ImageControl extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final String UPLOAD_DIR = "img";
+	private static final String UPLOAD_DIR = "images";
 
 	private ProductDao productDao;
 
@@ -83,6 +84,31 @@ public class ImageControl extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		HttpSession session =request.getSession(false);
+
+		UserBean user = null;
+		String authToken = null;
+
+		if (session != null) {
+
+		    user =
+		        (UserBean) session.getAttribute("user");
+
+		    authToken =
+		        (String) session.getAttribute("authToken");
+		}
+
+		if (user == null ||
+		        authToken == null ||
+		        !"admin".equalsIgnoreCase(user.getRole())) {
+
+		    response.sendError(
+		        HttpServletResponse.SC_FORBIDDEN,
+		        "Caricamento non autorizzato"
+		    );
+
+		    return;
+		}
 		String action = request.getParameter("action");
 		if ("upload".equalsIgnoreCase(action)) {
 			int productCode = Integer.parseInt(request.getParameter("productCode"));
@@ -107,6 +133,7 @@ public class ImageControl extends HttpServlet {
 				}
 			}
 		}
+		
 		response.sendRedirect(request.getContextPath() + "/admin/welcome" );
 	}
 
@@ -120,6 +147,6 @@ public class ImageControl extends HttpServlet {
 		}
 		return UUID.randomUUID() + extension;
 	}
-
+	
 	
 }
