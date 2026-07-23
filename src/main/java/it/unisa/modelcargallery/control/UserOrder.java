@@ -22,78 +22,49 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/common/orders")
 public class UserOrder extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private OrderDao orderDao;
+	private OrderDao orderDao;
 
-    @Override
-    public void init(ServletConfig config)
-            throws ServletException {
+	@Override
+	public void init(ServletConfig config) throws ServletException {
 
-        super.init(config);
+		super.init(config);
 
-        DataSource ds =
-            (DataSource) getServletContext()
-                .getAttribute("DataSource");
+		DataSource ds = (DataSource) getServletContext().getAttribute("DataSource");
 
-        if (ds == null) {
-            throw new ServletException(
-                "DataSource non disponibile"
-            );
-        }
+		if (ds == null) {
+			throw new ServletException("DataSource non disponibile");
+		}
 
-        orderDao = new OrderDaoImpl(ds);
-    }
+		orderDao = new OrderDaoImpl(ds);
+	}
 
-    @Override
-    protected void doGet(
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws ServletException, IOException {
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-        HttpSession session =
-            request.getSession(false);
+		HttpSession session = request.getSession(false);
 
-        UserBean user =
-            session == null
-            ? null
-            : (UserBean) session.getAttribute("user");
+		UserBean user = session == null ? null : (UserBean) session.getAttribute("user");
 
-        if (user == null) {
-            response.sendRedirect(
-                request.getContextPath() +
-                "/product?loginRequired=true"
-            );
-            return;
-        }
+		if (user == null) {
+			response.sendRedirect(request.getContextPath() + "/product?loginRequired=true");
+			return;
+		}
 
-        try {
-            Collection<OrderBean> orders =
-                orderDao.doRetrieveByUserId(
-                    user.getId()
-                );
+		try {
+			Collection<OrderBean> orders = orderDao.doRetrieveByUserId(user.getId());
 
-            request.setAttribute(
-                "orders",
-                orders
-            );
+			request.setAttribute("orders", orders);
 
-            RequestDispatcher dispatcher =
-                request.getRequestDispatcher(
-                    "/WEB-INF/view/common/orders.jsp"
-                );
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/common/orders.jsp");
 
-            dispatcher.forward(
-                request,
-                response
-            );
+			dispatcher.forward(request, response);
 
-        } catch (SQLException e) {
+		} catch (SQLException e) {
 
-            throw new ServletException(
-                "Errore nel recupero degli ordini",
-                e
-            );
-        }
-    }
+			throw new ServletException("Errore nel recupero degli ordini", e);
+		}
+	}
 }

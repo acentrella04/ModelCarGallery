@@ -65,8 +65,10 @@ CREATE TABLE order_items (
 );
 
 INSERT INTO product(name,description,price,quantity,immagine_copertina,mime_type) VALUES
-	('LANCIA STRATOS TURBO EMINENECE ANDRUET-BICHE TOUR DE FRANCE 1976 #436','Modello 1:10',150.00,5,'Modellini-auto-scala-1-24-da-collezione.jpg','image/jpeg'),
-    ('PORSCHE 911 SC GR.4 ROHRL-GEISTDORFER SAN REMO 1982 #1 - ARE 701-24','Modello 1:10',300.00,5,'170333.jpg','image/jpeg');
+	('LANCIA STRATOS TURBO EMINENECE ANDRUET-BICHE TOUR DE FRANCE 1976 #436','Auto Scala 1:24',150.00,5,'Modellini-auto-scala-1-24-da-collezione.jpg','image/jpeg'),
+    ('PORSCHE 911 SC GR.4 ROHRL-GEISTDORFER SAN REMO 1982 #1 - ARE 701-24','Auto Scala 1:48',300.00,5,'170333.jpg','image/jpeg'),
+    ('HONDA NSR250 DAIJIRO KATO 2001','Moto Scala 1:24',100.00,7,'DIE-CAST-HONDA-NSR250-DAIJIRO-KATO-2001-MOTO-SCALA-124-233775188992-2-300x300.jpg','image/jpeg'),
+    ('Ducati 1199 Panigale S Tricolore','Moto Scala 1:48',400.00,8,'019d8b00-f42c-78a2-83c1-cf9dfcbd4527_1440.jpg','image/jpeg');
     
 INSERT INTO users(username,password_hash,role) VALUES 
 	('admin@gmail.com','c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3eab1d80b931dd472634dfac71cd34ebc35d16ab7fb8a90c81f975113d6c7538dc69dd8de9077ec','admin');

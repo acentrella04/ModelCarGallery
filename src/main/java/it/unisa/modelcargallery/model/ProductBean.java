@@ -7,17 +7,17 @@ public class ProductBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private int code;
-    private String name;
-    private String description;
-    private float price;
-    private int quantity;
-    private String path;
-    private byte[] image;
-    private String mimeType;
+	private String name;
+	private String description;
+	private float price;
+	private int quantity;
+	private String path;
+	private byte[] image;
+	private String mimeType;
 
 	public ProductBean() {
 	}
-	
+
 	public int getCode() {
 		return code;
 	}
@@ -25,6 +25,7 @@ public class ProductBean implements Serializable {
 	public void setCode(int code) {
 		this.code = code;
 	}
+
 	public byte[] getImage() {
 		return image;
 	}
@@ -32,7 +33,7 @@ public class ProductBean implements Serializable {
 	public void setImage(byte[] image) {
 		this.image = image;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -72,7 +73,7 @@ public class ProductBean implements Serializable {
 	public void setImmagine_copertina(String path) {
 		this.path = path;
 	}
-	
+
 	public String getMimeType() {
 		return mimeType;
 	}
@@ -82,7 +83,7 @@ public class ProductBean implements Serializable {
 	}
 
 	public boolean hasImage() {
-        return path != null && !path.isEmpty();
-    }
+		return path != null && !path.isEmpty();
+	}
 
 }

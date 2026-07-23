@@ -1,93 +1,101 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
-	import="java.util.*,it.unisa.modelcargallery.model.*" %>
+<%@ page language="java"
+    contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"
+    import="java.util.*,it.unisa.modelcargallery.model.*" %>
 
-	<!DOCTYPE html>
-	<html lang="it">
+<!DOCTYPE html>
 
-	<head>
+<html lang="it">
 
-		<meta charset="UTF-8">
+<head>
 
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
 
-		<title>Model Car Gallery</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
 
-		<link rel="stylesheet" href="<%=request.getContextPath()%>/styles/forms.css">
+    <title>Model Car Gallery</title>
 
-		<link rel="stylesheet" href="<%=request.getContextPath()%>/styles/responsive.css">
+    <link rel="stylesheet"
+          href="<%=request.getContextPath()%>/styles/forms.css">
 
-		<script src="<%=request.getContextPath()%>/scripts/validation.js" defer>
-		</script>
+    <link rel="stylesheet"
+          href="<%=request.getContextPath()%>/styles/responsive.css">
 
-		<script src="<%=request.getContextPath()%>/scripts/cart.js" defer>
-		</script>
+    <script
+        src="<%=request.getContextPath()%>/scripts/validation.js"
+        defer>
+    </script>
 
-	</head>
+    <script
+        src="<%=request.getContextPath()%>/scripts/cart.js"
+        defer>
+    </script>
 
-	<body data-context-path="<%=request.getContextPath()%>">
+</head>
 
-		<% List<?> errors =
-			(List
-			<?>) request.getAttribute("errors");
+<body data-context-path="<%=request.getContextPath()%>">
+
+
+<%
+List<?> errors =(List<?>) request.getAttribute("errors");
 
 if (errors != null && !errors.isEmpty()) {
 %>
 
-<div class="form-message form-message-error">
+    <div class="form-message form-message-error">
 
-    <%
-    for (Object error : errors) {
-    %>
+        <%
+        for (Object error : errors) {
+        %>
 
-    <p><%=error%></p>
+            <p><%=error%></p>
 
-    <%
-    }
-    %>
+        <%
+        }
+        %>
 
-</div>
+    </div>
 
 <%
 }
+
+
+String selectedDescription =
+        (String) request.getAttribute(
+                "selectedDescription"
+        );
+
+if (selectedDescription == null) {
+    selectedDescription = "";
+}
 %>
 
-<!-- =========================
-     LOGO
-     ========================= -->
 
 <header id="logo">
 
     <a href="<%=request.getContextPath()%>/product">
 
-        <img id="imglogo"
-             src="<%=request.getContextPath()%>/images/Gemini_Generated_Image_es7nd4es7nd4es7n.png"
-             alt="Model Car Gallery">
+        <img
+            id="imglogo"
+            src="<%=request.getContextPath()%>/images/Gemini_Generated_Image_es7nd4es7nd4es7n.png"
+            alt="Model Car Gallery">
 
     </a>
 
 </header>
 
-
-<!-- =========================
-     CONTENUTO PRINCIPALE
-     ========================= -->
-
 <main id="maincontent">
 
-
-    <!-- =========================
-         BARRA LATERALE
-         ========================= -->
 
     <aside id="navbar">
 
 
-        <!-- LOGIN -->
-
-        <form id="loginForm"
-              action="<%=request.getContextPath()%>/loginServlet"
-              method="post"
-              novalidate>
+        <form
+            id="loginForm"
+            action="<%=request.getContextPath()%>/loginServlet"
+            method="post"
+            novalidate>
 
             <div id="divlogin">
 
@@ -97,27 +105,33 @@ if (errors != null && !errors.isEmpty()) {
                     Email:
                 </label>
 
-                <input type="email"
-                       id="mailSpace"
-                       name="mail">
+                <input
+                    type="email"
+                    id="mailSpace"
+                    name="mail">
 
                 <label for="pwdSpace">
                     Password:
                 </label>
 
-                <input type="password"
-                       id="pwdSpace"
-                       name="pwd">
+                <input
+                    type="password"
+                    id="pwdSpace"
+                    name="pwd">
 
                 <div class="login-actions">
 
-                    <input type="submit"
-                           value="Login"
-                           id="loginbutton">
+                    <input
+                        type="submit"
+                        value="Login"
+                        id="loginbutton">
 
-                    <a href="<%=request.getContextPath()%>/Setup"
-                       id="regbutton">
+                    <a
+                        href="<%=request.getContextPath()%>/Setup"
+                        id="regbutton">
+
                         Registrati
+
                     </a>
 
                 </div>
@@ -127,158 +141,255 @@ if (errors != null && !errors.isEmpty()) {
         </form>
 
 
-        <!-- MENU E CAROSELLO -->
-
+        
         <div id="divnavbar">
 
             <div id="carosellonews">
 
-                <img src="<%=request.getContextPath()%>/images/Gemini_Generated_Image_kqax5fkqax5fkqax.png"
-                     id="imgnews"
-                     alt="Novità modellini auto">
+                <img
+                    src="<%=request.getContextPath()%>/images/Gemini_Generated_Image_kqax5fkqax5fkqax.png"
+                    id="imgnews"
+                    alt="Novità modellini auto">
 
-                <img src="<%=request.getContextPath()%>/images/Gemini_Generated_Image_f2fcmef2fcmef2fc.png"
-                     id="imgnews2"
-                     alt="Offerte modellini auto">
+                <img
+                    src="<%=request.getContextPath()%>/images/Gemini_Generated_Image_f2fcmef2fcmef2fc.png"
+                    id="imgnews2"
+                    alt="Offerte modellini auto">
 
             </div>
 
+
+          
             <div class="scale-list">
 
-                <span>Auto Scala 1:10</span>
-                <span>Moto Scala 1:10</span>
-                <span>Auto Scala 1:100</span>
-                <span>Moto Scala 1:100</span>
+
+         
+                <form
+                    action="<%=request.getContextPath()%>/product"method="get">
+
+                    <button type="submit"class="<%=selectedDescription.isEmpty()? "active-filter": ""%>">
+
+                        Tutti i prodotti
+
+                    </button>
+
+                </form>
+
+
+           
+                <form
+                    action="<%=request.getContextPath()%>/product"
+                    method="get">
+
+                    <button
+                        type="submit"
+                        name="description"
+                        value="Auto Scala 1:24"
+                        class="<%="Auto Scala 1:24".equals(selectedDescription)? "active-filter": ""%>">
+
+                        Auto Scala 1:24
+
+                    </button>
+
+                </form>
+
+
+                <form
+                    action="<%=request.getContextPath()%>/product"
+                    method="get">
+
+                    <button
+                        type="submit"
+                        name="description"
+                        value="Moto Scala 1:24"
+                        class="<%="Moto Scala 1:24".equals(selectedDescription)? "active-filter": ""%>">
+
+                        Moto Scala 1:24
+
+                    </button>
+
+                </form>
+
+
+              
+                <form
+                    action="<%=request.getContextPath()%>/product"
+                    method="get">
+
+                    <button
+                        type="submit"
+                        name="description"
+                        value="Auto Scala 1:48"
+                        class="<%="Auto Scala 1:48".equals(selectedDescription)? "active-filter": ""%>">
+
+                        Auto Scala 1:48
+
+                    </button>
+
+                </form>
+
+
+                <form
+                    action="<%=request.getContextPath()%>/product"
+                    method="get">
+
+                    <button
+                        type="submit"
+                        name="description"
+                        value="Moto Scala 1:48"
+                        class="<%="Moto Scala 1:48".equals(selectedDescription)? "active-filter": ""%>">
+
+                        Moto Scala 1:48
+
+                    </button>
+
+                </form>
 
             </div>
 
         </div>
 
 
-        <!-- =========================
-             CARRELLO
-             ========================= -->
-
         <%
-        CartBean cart =
-                (CartBean) session.getAttribute("cart");
+        CartBean cart =(CartBean) session.getAttribute("cart");
 
         if (cart == null) {
+
             cart = new CartBean();
-            session.setAttribute("cart", cart);
+
+            session.setAttribute("cart",cart);
         }
 
-        List<ProductBean> distinctProducts =
-                cart.getDistinctProducts();
+        List<ProductBean> distinctProducts =cart.getDistinctProducts();
 
-        boolean cartIsEmpty =
-                cart.getProducts().isEmpty();
+        boolean cartIsEmpty =cart.getProducts().isEmpty();
         %>
 
         <section id="cartContainer">
 
             <h2>Cart</h2>
 
-            <p id="cartAjaxMessage"
-               class="cart-message"
-               aria-live="polite">
+            <p
+                id="cartAjaxMessage"
+                class="cart-message"
+                aria-live="polite">
             </p>
 
             <div class="table-wrapper">
 
-                <table id="cartTable"
-                       <%=cartIsEmpty ? "hidden" : ""%>>
+                <table
+                    id="cartTable"
+                    <%=cartIsEmpty ? "hidden" : ""%>>
 
                     <thead>
 
                         <tr>
+
                             <th>Nome</th>
+
                             <th>Prezzo</th>
+
                             <th>Quantità</th>
+
                             <th>Subtotale</th>
+
                             <th>Azioni</th>
+
                         </tr>
 
                     </thead>
 
                     <tbody id="cartBody">
 
-                    <%
-                    for (ProductBean beancart :
-                            distinctProducts) {
+                        <%
+                        for (ProductBean beancart :
+                                distinctProducts) {
 
-                        int cartQuantity =
-                                cart.getQuantity(
-                                        beancart.getCode()
-                                );
+                            int cartQuantity =
+                                    cart.getQuantity(
+                                            beancart.getCode()
+                                    );
 
-                        float rowSubtotal =
-                                beancart.getPrice()
-                                * cartQuantity;
-                    %>
+                            float rowSubtotal =
+                                    beancart.getPrice()
+                                    * cartQuantity;
+                        %>
 
-                        <tr>
+                            <tr>
 
-                            <td>
-                                <%=beancart.getName()%>
-                            </td>
+                                <td>
+                                    <%=beancart.getName()%>
+                                </td>
 
-                            <td>
-                                € <%=String.format(
-                                        Locale.US,
-                                        "%.2f",
-                                        beancart.getPrice()
-                                )%>
-                            </td>
+                                <td>
 
-                            <td class="cart-quantity-controls">
+                                    € <%=String.format(
+                                            Locale.US,
+                                            "%.2f",
+                                            beancart.getPrice()
+                                    )%>
 
-                                <a href="<%=request.getContextPath()%>/product?action=deleteC&code=<%=beancart.getCode()%>"
-                                   class="cart-action"
-                                   data-action="deleteC"
-                                   data-code="<%=beancart.getCode()%>"
-                                   aria-label="Diminuisci quantità">
-                                    −
-                                </a>
+                                </td>
 
-                                <strong>
-                                    <%=cartQuantity%>
-                                </strong>
+                                <td class="cart-quantity-controls">
 
-                                <a href="<%=request.getContextPath()%>/product?action=addC&code=<%=beancart.getCode()%>"
-                                   class="cart-action"
-                                   data-action="addC"
-                                   data-code="<%=beancart.getCode()%>"
-                                   aria-label="Aumenta quantità">
-                                    +
-                                </a>
+                                    <a
+                                        href="<%=request.getContextPath()%>/product?action=deleteC&amp;code=<%=beancart.getCode()%>"
+                                        class="cart-action"
+                                        data-action="deleteC"
+                                        data-code="<%=beancart.getCode()%>"
+                                        aria-label="Diminuisci quantità">
 
-                            </td>
+                                        −
 
-                            <td>
-                                € <%=String.format(
-                                        Locale.US,
-                                        "%.2f",
-                                        rowSubtotal
-                                )%>
-                            </td>
+                                    </a>
 
-                            <td>
+                                    <strong>
+                                        <%=cartQuantity%>
+                                    </strong>
 
-                                <a href="<%=request.getContextPath()%>/product?action=removeAllC&code=<%=beancart.getCode()%>"
-                                   class="cart-action"
-                                   data-action="removeAllC"
-                                   data-code="<%=beancart.getCode()%>">
-                                    Rimuovi
-                                </a>
+                                    <a
+                                        href="<%=request.getContextPath()%>/product?action=addC&amp;code=<%=beancart.getCode()%>"
+                                        class="cart-action"
+                                        data-action="addC"
+                                        data-code="<%=beancart.getCode()%>"
+                                        aria-label="Aumenta quantità">
 
-                            </td>
+                                        +
 
-                        </tr>
+                                    </a>
 
-                    <%
-                    }
-                    %>
+                                </td>
+
+                                <td>
+
+                                    € <%=String.format(
+                                            Locale.US,
+                                            "%.2f",
+                                            rowSubtotal
+                                    )%>
+
+                                </td>
+
+                                <td>
+
+                                    <a
+                                        href="<%=request.getContextPath()%>/product?action=removeAllC&amp;code=<%=beancart.getCode()%>"
+                                        class="cart-action"
+                                        data-action="removeAllC"
+                                        data-code="<%=beancart.getCode()%>">
+
+                                        Rimuovi
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        <%
+                        }
+                        %>
 
                     </tbody>
 
@@ -287,33 +398,28 @@ if (errors != null && !errors.isEmpty()) {
             </div>
 
 
-            <!-- MESSAGGIO CARRELLO VUOTO -->
-
-            <p id="cartEmpty"
-               <%=!cartIsEmpty ? "hidden" : ""%>>
+     
+            <p
+                id="cartEmpty"
+                <%=!cartIsEmpty ? "hidden" : ""%>>
 
                 Il carrello è vuoto.
 
             </p>
 
 
-            <!-- RIEPILOGO CARRELLO -->
-
-            <div id="cartSummary"
-                 <%=cartIsEmpty ? "hidden" : ""%>>
+            <div
+                id="cartSummary" <%=cartIsEmpty ? "hidden" : ""%>>
 
                 <p>
 
                     <strong>
 
                         Totale:
+
                         € <span id="cartTotal">
 
-                            <%=String.format(
-                                    Locale.US,
-                                    "%.2f",
-                                    cart.getTotal()
-                            )%>
+                            <%=String.format(Locale.US,"%.2f",cart.getTotal())%>
 
                         </span>
 
@@ -323,9 +429,10 @@ if (errors != null && !errors.isEmpty()) {
 
                 <p>
 
-                    <a href="<%=request.getContextPath()%>/product?action=clearC"
-                       class="cart-action"
-                       data-action="clearC">
+                    <a
+                        href="<%=request.getContextPath()%>/product?action=clearC"
+                        class="cart-action"
+                        data-action="clearC">
 
                         Svuota carrello
 
@@ -333,12 +440,14 @@ if (errors != null && !errors.isEmpty()) {
 
                 </p>
 
-                <form action="<%=request.getContextPath()%>/Setup"
-                      method="get">
+                <form
+                    action="<%=request.getContextPath()%>/Setup"
+                    method="get">
 
-                    <input type="submit"
-                           value="Procedi all'ordine"
-                           id="processOrder">
+                    <input
+                        type="submit"
+                        value="Procedi all'ordine"
+                        id="processOrder">
 
                 </form>
 
@@ -349,178 +458,243 @@ if (errors != null && !errors.isEmpty()) {
     </aside>
 
 
-    <!-- =========================
-         CATALOGO PRODOTTI
-         ========================= -->
-
+ 
     <section id="productfield">
 
         <div class="product-gallery">
 
+            <%
+            Collection<ProductBean> products =(Collection<ProductBean>)request.getAttribute("products");
+
+            if (products != null &&
+                    !products.isEmpty()) {
+
+                for (ProductBean bean : products) {
+            %>
+
+                    <article class="product-card">
+
+
+                        <%
+                        if (bean.hasImage()) {
+                        %>
+
+                            <img
+                                src="<%=request.getContextPath()%>/image?action=show&amp;code=<%=bean.getCode()%>"
+                                alt="<%=bean.getName()%>"
+                                class="productImg">
+
+                        <%
+                        } else {
+                        %>
+
+                            <img
+                                src="<%=request.getContextPath()%>/images/Modellini-auto-scala-1-24-da-collezione.jpg"
+                                alt="Nessuna immagine disponibile"
+                                class="productImg">
+
+                        <%
+                        }
+                        %>
+
+                        <b>
+                            <%=bean.getName()%>
+                        </b>
+
+
+                        <div class="product-actions">
+
+
+                            <form
+                                action="<%=request.getContextPath()%>/product"
+                                method="get">
+
+                                <input
+                                    type="hidden"
+                                    name="action"
+                                    value="addC">
+
+                                <input
+                                    type="hidden"
+                                    name="code"
+                                    value="<%=bean.getCode()%>">
+
+                                <%
+                                if (!selectedDescription.isEmpty()) {
+                                %>
+
+                                    <input
+                                        type="hidden"
+                                        name="description"
+                                        value="<%=selectedDescription%>">
+
+                                <%
+                                }
+                                %>
+
+                                <button
+                                    type="submit"
+                                    class="addcartbutton cart-action"
+                                    data-action="addC"
+                                    data-code="<%=bean.getCode()%>">
+
+                                    Aggiungi al carrello
+
+                                </button>
+
+                            </form>
+
+
+                            <form
+                                action="<%=request.getContextPath()%>/product#detailsfield"
+                                method="get">
+
+                                <input
+                                    type="hidden"
+                                    name="action"
+                                    value="read">
+
+                                <input
+                                    type="hidden"
+                                    name="code"
+                                    value="<%=bean.getCode()%>">
+
+                                <%
+                                if (!selectedDescription.isEmpty()) {
+                                %>
+
+                                    <input
+                                        type="hidden"
+                                        name="description"
+                                        value="<%=selectedDescription%>">
+
+                                <%
+                                }
+                                %>
+
+                                <button
+                                    type="submit"
+                                    class="addcartbutton">
+
+                                    Dettagli
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </article>
+
+            <%
+                }
+
+            } else {
+            %>
+
+                <p>
+                    Nessun prodotto disponibile.
+                </p>
+
+            <%
+            }
+            %>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<section id="detailsfield">
+
+    <div id="detailsSection">
+
+        <h2>Details</h2>
+
         <%
-        Collection<?> products =
-			(Collection
-			<?>) request.getAttribute(
-                        "products"
-                );
+        ProductBean product =(ProductBean)request.getAttribute("product");
 
-        if (products != null &&
-                !products.isEmpty()) {
+        if (product != null) {
+        %>
 
-            Iterator<?> iterator =
-			products.iterator();
+            <div class="table-wrapper">
 
-			while (iterator.hasNext()) {
+                <table>
 
-			ProductBean bean =
-			(ProductBean) iterator.next();
-			%>
+                    <thead>
 
-			<article class="product-card">
+                        <tr>
 
-				<% if (bean.hasImage()) { %>
+                            <th>Code</th>
 
-					<img alt="<%=bean.getName()%>" class="productImg"
-						src="<%=request.getContextPath()%>/image?action=show&code=<%=bean.getCode()%>">
+                            <th>Name</th>
 
-					<% } else { %>
+                            <th>Description</th>
 
-						<img alt="Nessuna immagine disponibile" class="productImg"
-							src="<%=request.getContextPath()%>/images/Modellini-auto-scala-1-24-da-collezione.jpg">
+                            <th>Price</th>
 
-						<% } %>
+                            <th>Quantity</th>
 
-							<b>
-								<%=bean.getName()%>
-							</b>
+                        </tr>
 
-							<div class="product-actions">
+                    </thead>
 
+                    <tbody>
 
-								<!-- AGGIUNGI AL CARRELLO -->
+                        <tr>
 
-								<form action="<%=request.getContextPath()%>/product" method="get">
+                            <td>
+                                <%=product.getCode()%>
+                            </td>
 
-									<input type="hidden" name="action" value="addC">
+                            <td>
+                                <%=product.getName()%>
+                            </td>
 
-									<input type="hidden" name="code" value="<%=bean.getCode()%>">
+                            <td>
+                                <%=product.getDescription()%>
+                            </td>
 
-									<button type="submit" class="addcartbutton cart-action" data-action="addC"
-										data-code="<%=bean.getCode()%>">
+                            <td>
 
-										Aggiungi al carrello
+                                € <%=String.format(
+                                        Locale.US,
+                                        "%.2f",
+                                        product.getPrice()
+                                )%>
 
-									</button>
+                            </td>
 
-								</form>
+                            <td>
+                                <%=product.getQuantity()%>
+                            </td>
 
+                        </tr>
 
-								<!-- DETTAGLI -->
+                    </tbody>
 
-								<form action="<%=request.getContextPath()%>/product" method="get">
+                </table>
 
-									<input type="hidden" name="action" value="read">
+            </div>
 
-									<input type="hidden" name="code" value="<%=bean.getCode()%>">
+        <%
+        } else {
+        %>
 
-									<button type="submit" class="addcartbutton">
+            <p>
+                Seleziona un prodotto per visualizzarne i dettagli.
+            </p>
 
-										Dettagli
+        <%
+        }
+        %>
 
-									</button>
+    </div>
 
-								</form>
+</section>
 
-							</div>
+</body>
 
-			</article>
-
-			<% } } else { %>
-
-				<p>Nessun prodotto disponibile.</p>
-
-				<% } %>
-
-					</div>
-
-					</section>
-
-					</main>
-
-
-					<!-- =========================
-     DETTAGLI PRODOTTO
-     ========================= -->
-
-					<section id="detailsfield">
-
-						<div id="detailsSection">
-
-							<h2>Details</h2>
-
-							<% ProductBean product=(ProductBean) request.getAttribute( "product" ); if (product !=null)
-								{ %>
-
-								<div class="table-wrapper">
-
-									<table>
-
-										<thead>
-
-											<tr>
-												<th>Code</th>
-												<th>Name</th>
-												<th>Description</th>
-												<th>Price</th>
-												<th>Quantity</th>
-											</tr>
-
-										</thead>
-
-										<tbody>
-
-											<tr>
-
-												<td>
-													<%=product.getCode()%>
-												</td>
-
-												<td>
-													<%=product.getName()%>
-												</td>
-
-												<td>
-													<%=product.getDescription()%>
-												</td>
-
-												<td>
-													€ <%=String.format( Locale.US, "%.2f" , product.getPrice() )%>
-												</td>
-
-												<td>
-													<%=product.getQuantity()%>
-												</td>
-
-											</tr>
-
-										</tbody>
-
-									</table>
-
-								</div>
-
-								<% } else { %>
-
-									<p>
-										Seleziona un prodotto per visualizzarne i dettagli.
-									</p>
-
-									<% } %>
-
-						</div>
-
-					</section>
-
-	</body>
-
-	</html>
+</html>

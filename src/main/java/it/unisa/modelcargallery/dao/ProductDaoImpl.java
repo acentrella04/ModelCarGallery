@@ -13,140 +13,195 @@ import it.unisa.modelcargallery.model.ProductBean;
 
 public class ProductDaoImpl implements ProductDao {
 
-    private static final String TABLE_NAME = "product";
-    private DataSource ds = null;
+	private static final String TABLE_NAME = "product";
+	private DataSource ds = null;
 
-    public ProductDaoImpl(DataSource ds) {
-        this.ds = ds;
-    }
+	public ProductDaoImpl(DataSource ds) {
+		this.ds = ds;
+	}
 
-    @Override
-    public synchronized void doSave(ProductBean product) throws SQLException {
-        String insertSQL = "INSERT INTO " + TABLE_NAME
-                + " (name, description, price, quantity) VALUES (?, ?, ?, ?)";
-        try (Connection connection = ds.getConnection();
-        		PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
-            preparedStatement.setString(1, product.getName());
-            preparedStatement.setString(2, product.getDescription());
-            preparedStatement.setFloat(3, product.getPrice());
-            preparedStatement.setInt(4, product.getQuantity());
-            preparedStatement.executeUpdate();
-        }
-    }
-    
-    @Override
-    public synchronized boolean doUpdateImage(ProductBean product) throws SQLException {
-        String sql = "UPDATE " + TABLE_NAME + " SET immagine_copertina = ?, mime_type = ? WHERE code = ?";
-        try (Connection conn = ds.getConnection();
-        		PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, product.getImmagine_copertina());
-            ps.setString(2, product.getMimeType());
-            ps.setInt(3, product.getCode());
-            int rowsUpdated = ps.executeUpdate();
-            return rowsUpdated != 0;
-        }
-    }
-    @Override
-    public synchronized void doUpdate(ProductBean product)
-            throws SQLException {
+	@Override
+	public synchronized void doSave(ProductBean product) throws SQLException {
+		String insertSQL = "INSERT INTO " + TABLE_NAME + " (name, description, price, quantity) VALUES (?, ?, ?, ?)";
+		try (Connection connection = ds.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
+			preparedStatement.setString(1, product.getName());
+			preparedStatement.setString(2, product.getDescription());
+			preparedStatement.setFloat(3, product.getPrice());
+			preparedStatement.setInt(4, product.getQuantity());
+			preparedStatement.executeUpdate();
+		}
+	}
 
-        String updateSQL =
-            "UPDATE product SET " +
-            "name = ?, " +
-            "description = ?, " +
-            "price = ?, " +
-            "quantity = ? " +
-            "WHERE code = ?";
+	@Override
+	public synchronized boolean doUpdateImage(ProductBean product) throws SQLException {
+		String sql = "UPDATE " + TABLE_NAME + " SET immagine_copertina = ?, mime_type = ? WHERE code = ?";
+		try (Connection conn = ds.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+			ps.setString(1, product.getImmagine_copertina());
+			ps.setString(2, product.getMimeType());
+			ps.setInt(3, product.getCode());
+			int rowsUpdated = ps.executeUpdate();
+			return rowsUpdated != 0;
+		}
+	}
 
-        try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement =
-                 connection.prepareStatement(updateSQL)) {
+	@Override
+	public synchronized void doUpdate(ProductBean product) throws SQLException {
 
-            preparedStatement.setString(
-                1,
-                product.getName()
-            );
+		String updateSQL = "UPDATE product SET " + "name = ?, " + "description = ?, " + "price = ?, " + "quantity = ? "
+				+ "WHERE code = ?";
 
-            preparedStatement.setString(
-                2,
-                product.getDescription()
-            );
+		try (Connection connection = ds.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
 
-            preparedStatement.setFloat(
-                3,
-                product.getPrice()
-            );
+			preparedStatement.setString(1, product.getName());
 
-            preparedStatement.setInt(
-                4,
-                product.getQuantity()
-            );
+			preparedStatement.setString(2, product.getDescription());
 
-            preparedStatement.setInt(
-                5,
-                product.getCode()
-            );
+			preparedStatement.setFloat(3, product.getPrice());
 
-            preparedStatement.executeUpdate();
-        }
-    }
-    @Override
-    public synchronized ProductBean doRetrieveByKey(int code) throws SQLException {
-        ProductBean bean = new ProductBean();
-        String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE code = ?";
-        try (Connection connection = ds.getConnection();
-        		PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
-            preparedStatement.setInt(1, code);
-            try (ResultSet rs = preparedStatement.executeQuery()) {
-                while (rs.next()) {
-                    bean.setCode(rs.getInt("code"));
-                    bean.setName(rs.getString("name"));
-                    bean.setDescription(rs.getString("description"));
-                    bean.setPrice(rs.getFloat("price"));
-                    bean.setQuantity(rs.getInt("quantity"));
-                    bean.setImmagine_copertina(rs.getString("immagine_copertina"));
-                    bean.setMimeType(rs.getString("mime_type"));
-                }
-            }
-        }
-        return bean;
-    }
+			preparedStatement.setInt(4, product.getQuantity());
 
-    @Override
-    public synchronized boolean doDelete(int code) throws SQLException {
-        String deleteSQL = "DELETE FROM " + TABLE_NAME + " WHERE code = ?";
-        try (Connection connection = ds.getConnection();
-        		PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
-            preparedStatement.setInt(1, code);
-            int result = preparedStatement.executeUpdate();
-            return result != 0;
-        }
-    }
+			preparedStatement.setInt(5, product.getCode());
 
-    @Override
-    public synchronized List<ProductBean> doRetrieveAll(String order) throws SQLException {
-        List<ProductBean> products = new LinkedList<>();
-        String selectSQL = "SELECT * FROM " + TABLE_NAME;
-        if (order != null && !order.isEmpty()) {
-            selectSQL += " ORDER BY " + order;
-        }
-        try (Connection connection = ds.getConnection();
-        		PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
-        		ResultSet rs = preparedStatement.executeQuery()) {
-            while (rs.next()) {
-                ProductBean bean = new ProductBean();
-                bean.setCode(rs.getInt("code"));
-                bean.setName(rs.getString("name"));
-                bean.setDescription(rs.getString("description"));
-                bean.setPrice(rs.getFloat("price"));
-                bean.setQuantity(rs.getInt("quantity"));
-                bean.setImmagine_copertina(rs.getString("immagine_copertina"));
-                bean.setMimeType(rs.getString("mime_type"));
-                products.add(bean);
-            }
-        }
-        return products;
-    }
+			preparedStatement.executeUpdate();
+		}
+	}
+
+	@Override
+	public synchronized ProductBean doRetrieveByKey(int code) throws SQLException {
+		ProductBean bean = new ProductBean();
+		String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE code = ?";
+		try (Connection connection = ds.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
+			preparedStatement.setInt(1, code);
+			try (ResultSet rs = preparedStatement.executeQuery()) {
+				while (rs.next()) {
+					bean.setCode(rs.getInt("code"));
+					bean.setName(rs.getString("name"));
+					bean.setDescription(rs.getString("description"));
+					bean.setPrice(rs.getFloat("price"));
+					bean.setQuantity(rs.getInt("quantity"));
+					bean.setImmagine_copertina(rs.getString("immagine_copertina"));
+					bean.setMimeType(rs.getString("mime_type"));
+				}
+			}
+		}
+		return bean;
+	}
+
+	@Override
+	public synchronized boolean doDelete(int code) throws SQLException {
+		String deleteSQL = "DELETE FROM " + TABLE_NAME + " WHERE code = ?";
+		try (Connection connection = ds.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
+			preparedStatement.setInt(1, code);
+			int result = preparedStatement.executeUpdate();
+			return result != 0;
+		}
+	}
+
+	@Override
+	public synchronized List<ProductBean> doRetrieveAll(String order) throws SQLException {
+		List<ProductBean> products = new LinkedList<>();
+		String selectSQL = "SELECT * FROM " + TABLE_NAME;
+		if (order != null && !order.isEmpty()) {
+			selectSQL += " ORDER BY " + order;
+		}
+		try (Connection connection = ds.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+				ResultSet rs = preparedStatement.executeQuery()) {
+			while (rs.next()) {
+				ProductBean bean = new ProductBean();
+				bean.setCode(rs.getInt("code"));
+				bean.setName(rs.getString("name"));
+				bean.setDescription(rs.getString("description"));
+				bean.setPrice(rs.getFloat("price"));
+				bean.setQuantity(rs.getInt("quantity"));
+				bean.setImmagine_copertina(rs.getString("immagine_copertina"));
+				bean.setMimeType(rs.getString("mime_type"));
+				products.add(bean);
+			}
+		}
+		return products;
+	}
+
+	@Override
+	public synchronized List<ProductBean> doRetrieveByDescription(String description) throws SQLException {
+
+		List<ProductBean> products = new LinkedList<>();
+
+		String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE description = ?";
+
+		try (Connection connection = ds.getConnection();
+
+				PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
+
+			preparedStatement.setString(1, description);
+
+			try (ResultSet rs = preparedStatement.executeQuery()) {
+
+				while (rs.next()) {
+
+					ProductBean bean = new ProductBean();
+
+					bean.setCode(rs.getInt("code"));
+
+					bean.setName(rs.getString("name"));
+
+					bean.setDescription(rs.getString("description"));
+
+					bean.setPrice(rs.getFloat("price"));
+
+					bean.setQuantity(rs.getInt("quantity"));
+
+					bean.setImmagine_copertina(rs.getString("immagine_copertina"));
+
+					bean.setMimeType(rs.getString("mime_type"));
+
+					products.add(bean);
+				}
+			}
+		}
+
+		return products;
+	}
+
+	@Override
+	public synchronized List<ProductBean> doRetrieveRandom() throws SQLException {
+
+		List<ProductBean> products = new LinkedList<>();
+
+		String selectSQL = "SELECT * FROM " + TABLE_NAME + " ORDER BY RAND()";
+
+		try (Connection connection = ds.getConnection();
+
+				PreparedStatement preparedStatement = connection.prepareStatement(selectSQL);
+
+				ResultSet rs = preparedStatement.executeQuery()) {
+
+			while (rs.next()) {
+
+				ProductBean bean = new ProductBean();
+
+				bean.setCode(rs.getInt("code"));
+
+				bean.setName(rs.getString("name"));
+
+				bean.setDescription(rs.getString("description"));
+
+				bean.setPrice(rs.getFloat("price"));
+
+				bean.setQuantity(rs.getInt("quantity"));
+
+				bean.setImmagine_copertina(rs.getString("immagine_copertina"));
+
+				bean.setMimeType(rs.getString("mime_type"));
+
+				products.add(bean);
+			}
+		}
+
+		return products;
+	}
 }
-
-

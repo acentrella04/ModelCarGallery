@@ -16,366 +16,258 @@ import it.unisa.modelcargallery.model.OrderItemBean;
 
 public class OrderDaoImpl implements OrderDao {
 
-    private static final String TABLE_NAME = "orders";
-
-    private final DataSource ds;
-
-    public OrderDaoImpl(DataSource ds) {
-        this.ds = ds;
-    }
-
-    @Override
-    public void doSave(OrderBean order) throws SQLException {
-
-        String insertOrderSQL =
-            "INSERT INTO " + TABLE_NAME + " (" +
-            "user_id, name, surname, address, numberaddress, " +
-            "total, mail, payment_method" +
-            ") VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-        try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement =
-                 connection.prepareStatement(
-                     insertOrderSQL,
-                     Statement.RETURN_GENERATED_KEYS
-                 )) {
-
-            preparedStatement.setInt(1, order.getUserId());
-            preparedStatement.setString(2, order.getName());
-            preparedStatement.setString(3, order.getSurname());
-            preparedStatement.setString(4, order.getAddress());
-            preparedStatement.setInt(5, order.getNumberAddress());
-            preparedStatement.setFloat(6, order.getTotal());
-            preparedStatement.setString(7, order.getMail());
-            preparedStatement.setString(8, order.getPaymentMethod());
-
-            preparedStatement.executeUpdate();
-
-            try (ResultSet generatedKeys =
-                    preparedStatement.getGeneratedKeys()) {
-
-                if (generatedKeys.next()) {
-                    order.setId(generatedKeys.getInt(1));
-                } else {
-                    throw new SQLException(
-                        "Impossibile recuperare l'ID dell'ordine"
-                    );
-                }
-            }
-        }
-
-        saveOrderItems(order);
-    }
-
-    private void saveOrderItems(OrderBean order)
-            throws SQLException {
-
-        String insertItemSQL =
-            "INSERT INTO order_items (" +
-            "order_id, product_code, product_name, " +
-            "unit_price, quantity" +
-            ") VALUES (?, ?, ?, ?, ?)";
-
-        try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement =
-                 connection.prepareStatement(insertItemSQL)) {
-
-            for (OrderItemBean item : order.getItems()) {
-
-                preparedStatement.setInt(
-                    1,
-                    order.getId()
-                );
-
-                preparedStatement.setInt(
-                    2,
-                    item.getProductCode()
-                );
-
-                preparedStatement.setString(
-                    3,
-                    item.getProductName()
-                );
-
-                preparedStatement.setFloat(
-                    4,
-                    item.getUnitPrice()
-                );
-
-                preparedStatement.setInt(
-                    5,
-                    item.getQuantity()
-                );
-
-                preparedStatement.executeUpdate();
-            }
-        }
-    }
-
-    @Override
-    public OrderBean doRetrieveByKey(int id)
-            throws SQLException {
-
-        OrderBean order = null;
+	private static final String TABLE_NAME = "orders";
 
-        String selectSQL =
-            "SELECT * FROM " + TABLE_NAME + " WHERE id = ?";
+	private final DataSource ds;
 
-        try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement =
-                 connection.prepareStatement(selectSQL)) {
+	public OrderDaoImpl(DataSource ds) {
+		this.ds = ds;
+	}
 
-            preparedStatement.setInt(1, id);
+	@Override
+	public void doSave(OrderBean order) throws SQLException {
 
-            try (ResultSet rs =
-                    preparedStatement.executeQuery()) {
+		String insertOrderSQL = "INSERT INTO " + TABLE_NAME + " (" + "user_id, name, surname, address, numberaddress, "
+				+ "total, mail, payment_method" + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-                if (rs.next()) {
-                    order = createOrderBean(rs);
+		try (Connection connection = ds.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(insertOrderSQL,
+						Statement.RETURN_GENERATED_KEYS)) {
 
-                    order.setItems(
-                        retrieveItemsByOrderId(id)
-                    );
-                }
-            }
-        }
+			preparedStatement.setInt(1, order.getUserId());
+			preparedStatement.setString(2, order.getName());
+			preparedStatement.setString(3, order.getSurname());
+			preparedStatement.setString(4, order.getAddress());
+			preparedStatement.setInt(5, order.getNumberAddress());
+			preparedStatement.setFloat(6, order.getTotal());
+			preparedStatement.setString(7, order.getMail());
+			preparedStatement.setString(8, order.getPaymentMethod());
 
-        return order;
-    }
+			preparedStatement.executeUpdate();
 
-    @Override
-    public Collection<OrderBean> doRetrieveByUserId(int userId)
-            throws SQLException {
+			try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
 
-        List<OrderBean> orders =
-            new LinkedList<OrderBean>();
+				if (generatedKeys.next()) {
+					order.setId(generatedKeys.getInt(1));
+				} else {
+					throw new SQLException("Impossibile recuperare l'ID dell'ordine");
+				}
+			}
+		}
 
-        String selectSQL =
-            "SELECT * FROM " + TABLE_NAME +
-            " WHERE user_id = ?" +
-            " ORDER BY order_date DESC";
+		saveOrderItems(order);
+	}
 
-        try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement =
-                 connection.prepareStatement(selectSQL)) {
+	private void saveOrderItems(OrderBean order) throws SQLException {
 
-            preparedStatement.setInt(1, userId);
+		String insertItemSQL = "INSERT INTO order_items (" + "order_id, product_code, product_name, "
+				+ "unit_price, quantity" + ") VALUES (?, ?, ?, ?, ?)";
 
-            try (ResultSet rs =
-                    preparedStatement.executeQuery()) {
+		try (Connection connection = ds.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(insertItemSQL)) {
 
-                while (rs.next()) {
-                    OrderBean order = createOrderBean(rs);
+			for (OrderItemBean item : order.getItems()) {
 
-                    order.setItems(
-                        retrieveItemsByOrderId(order.getId())
-                    );
+				preparedStatement.setInt(1, order.getId());
 
-                    orders.add(order);
-                }
-            }
-        }
+				preparedStatement.setInt(2, item.getProductCode());
 
-        return orders;
-    }
+				preparedStatement.setString(3, item.getProductName());
 
-    @Override
-    public Collection<OrderBean> doRetrieveAll(
-            String from,
-            String to,
-            String mail)
-            throws SQLException {
+				preparedStatement.setFloat(4, item.getUnitPrice());
 
-        List<OrderBean> orders =
-            new LinkedList<OrderBean>();
+				preparedStatement.setInt(5, item.getQuantity());
 
-        String selectSQL =
-            "SELECT * FROM " + TABLE_NAME +
-            " WHERE 1 = 1";
+				preparedStatement.executeUpdate();
+			}
+		}
+	}
 
-        if (from != null && !from.isEmpty()) {
-            selectSQL += " AND DATE(order_date) >= ?";
-        }
+	@Override
+	public OrderBean doRetrieveByKey(int id) throws SQLException {
 
-        if (to != null && !to.isEmpty()) {
-            selectSQL += " AND DATE(order_date) <= ?";
-        }
+		OrderBean order = null;
 
-        if (mail != null && !mail.isEmpty()) {
-            selectSQL += " AND mail = ?";
-        }
+		String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE id = ?";
 
-        selectSQL += " ORDER BY order_date DESC";
+		try (Connection connection = ds.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
 
-        try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement =
-                 connection.prepareStatement(selectSQL)) {
+			preparedStatement.setInt(1, id);
 
-            int parameterIndex = 1;
+			try (ResultSet rs = preparedStatement.executeQuery()) {
 
-            if (from != null && !from.isEmpty()) {
-                preparedStatement.setString(
-                    parameterIndex,
-                    from
-                );
+				if (rs.next()) {
+					order = createOrderBean(rs);
 
-                parameterIndex++;
-            }
+					order.setItems(retrieveItemsByOrderId(id));
+				}
+			}
+		}
 
-            if (to != null && !to.isEmpty()) {
-                preparedStatement.setString(
-                    parameterIndex,
-                    to
-                );
+		return order;
+	}
 
-                parameterIndex++;
-            }
+	@Override
+	public Collection<OrderBean> doRetrieveByUserId(int userId) throws SQLException {
 
-            if (mail != null && !mail.isEmpty()) {
-                preparedStatement.setString(
-                    parameterIndex,
-                    mail
-                );
-            }
+		List<OrderBean> orders = new LinkedList<OrderBean>();
 
-            try (ResultSet rs =
-                    preparedStatement.executeQuery()) {
+		String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE user_id = ?" + " ORDER BY order_date DESC";
 
-                while (rs.next()) {
-                    OrderBean order = createOrderBean(rs);
+		try (Connection connection = ds.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
 
-                    order.setItems(
-                        retrieveItemsByOrderId(order.getId())
-                    );
+			preparedStatement.setInt(1, userId);
 
-                    orders.add(order);
-                }
-            }
-        }
+			try (ResultSet rs = preparedStatement.executeQuery()) {
 
-        return orders;
-    }
+				while (rs.next()) {
+					OrderBean order = createOrderBean(rs);
 
-    private List<OrderItemBean> retrieveItemsByOrderId(
-            int orderId)
-            throws SQLException {
+					order.setItems(retrieveItemsByOrderId(order.getId()));
 
-        List<OrderItemBean> items =
-            new LinkedList<OrderItemBean>();
+					orders.add(order);
+				}
+			}
+		}
 
-        String selectSQL =
-            "SELECT * FROM order_items " +
-            "WHERE order_id = ?";
+		return orders;
+	}
 
-        try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement =
-                 connection.prepareStatement(selectSQL)) {
+	@Override
+	public Collection<OrderBean> doRetrieveAll(String from, String to, String mail) throws SQLException {
 
-            preparedStatement.setInt(1, orderId);
+		List<OrderBean> orders = new LinkedList<OrderBean>();
 
-            try (ResultSet rs =
-                    preparedStatement.executeQuery()) {
+		String selectSQL = "SELECT * FROM " + TABLE_NAME + " WHERE 1 = 1";
 
-                while (rs.next()) {
-                    OrderItemBean item =
-                        new OrderItemBean();
+		if (from != null && !from.isEmpty()) {
+			selectSQL += " AND DATE(order_date) >= ?";
+		}
 
-                    item.setId(
-                        rs.getInt("id")
-                    );
+		if (to != null && !to.isEmpty()) {
+			selectSQL += " AND DATE(order_date) <= ?";
+		}
 
-                    item.setOrderId(
-                        rs.getInt("order_id")
-                    );
+		if (mail != null && !mail.isEmpty()) {
+			selectSQL += " AND mail = ?";
+		}
 
-                    item.setProductCode(
-                        rs.getInt("product_code")
-                    );
+		selectSQL += " ORDER BY order_date DESC";
 
-                    item.setProductName(
-                        rs.getString("product_name")
-                    );
+		try (Connection connection = ds.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
 
-                    item.setUnitPrice(
-                        rs.getFloat("unit_price")
-                    );
+			int parameterIndex = 1;
 
-                    item.setQuantity(
-                        rs.getInt("quantity")
-                    );
+			if (from != null && !from.isEmpty()) {
+				preparedStatement.setString(parameterIndex, from);
 
-                    items.add(item);
-                }
-            }
-        }
+				parameterIndex++;
+			}
 
-        return items;
-    }
+			if (to != null && !to.isEmpty()) {
+				preparedStatement.setString(parameterIndex, to);
 
-    private OrderBean createOrderBean(ResultSet rs)
-            throws SQLException {
+				parameterIndex++;
+			}
 
-        OrderBean order = new OrderBean();
+			if (mail != null && !mail.isEmpty()) {
+				preparedStatement.setString(parameterIndex, mail);
+			}
 
-        order.setId(
-            rs.getInt("id")
-        );
+			try (ResultSet rs = preparedStatement.executeQuery()) {
 
-        order.setUserId(
-            rs.getInt("user_id")
-        );
+				while (rs.next()) {
+					OrderBean order = createOrderBean(rs);
 
-        order.setOrderDate(
-            rs.getTimestamp("order_date")
-        );
+					order.setItems(retrieveItemsByOrderId(order.getId()));
 
-        order.setName(
-            rs.getString("name")
-        );
+					orders.add(order);
+				}
+			}
+		}
 
-        order.setSurname(
-            rs.getString("surname")
-        );
+		return orders;
+	}
 
-        order.setAddress(
-            rs.getString("address")
-        );
+	private List<OrderItemBean> retrieveItemsByOrderId(int orderId) throws SQLException {
 
-        order.setNumberAddress(
-            rs.getInt("numberaddress")
-        );
+		List<OrderItemBean> items = new LinkedList<OrderItemBean>();
 
-        order.setTotal(
-            rs.getFloat("total")
-        );
+		String selectSQL = "SELECT * FROM order_items " + "WHERE order_id = ?";
 
-        order.setMail(
-            rs.getString("mail")
-        );
+		try (Connection connection = ds.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
 
-        order.setPaymentMethod(
-            rs.getString("payment_method")
-        );
+			preparedStatement.setInt(1, orderId);
 
-        return order;
-    }
+			try (ResultSet rs = preparedStatement.executeQuery()) {
 
-    @Override
-    public boolean doDelete(int id) throws SQLException {
+				while (rs.next()) {
+					OrderItemBean item = new OrderItemBean();
 
-        String deleteSQL =
-            "DELETE FROM " + TABLE_NAME + " WHERE id = ?";
+					item.setId(rs.getInt("id"));
 
-        try (Connection connection = ds.getConnection();
-             PreparedStatement preparedStatement =
-                 connection.prepareStatement(deleteSQL)) {
+					item.setOrderId(rs.getInt("order_id"));
 
-            preparedStatement.setInt(1, id);
+					item.setProductCode(rs.getInt("product_code"));
 
-            int result =
-                preparedStatement.executeUpdate();
+					item.setProductName(rs.getString("product_name"));
 
-            return result != 0;
-        }
-    }
+					item.setUnitPrice(rs.getFloat("unit_price"));
+
+					item.setQuantity(rs.getInt("quantity"));
+
+					items.add(item);
+				}
+			}
+		}
+
+		return items;
+	}
+
+	private OrderBean createOrderBean(ResultSet rs) throws SQLException {
+
+		OrderBean order = new OrderBean();
+
+		order.setId(rs.getInt("id"));
+
+		order.setUserId(rs.getInt("user_id"));
+
+		order.setOrderDate(rs.getTimestamp("order_date"));
+
+		order.setName(rs.getString("name"));
+
+		order.setSurname(rs.getString("surname"));
+
+		order.setAddress(rs.getString("address"));
+
+		order.setNumberAddress(rs.getInt("numberaddress"));
+
+		order.setTotal(rs.getFloat("total"));
+
+		order.setMail(rs.getString("mail"));
+
+		order.setPaymentMethod(rs.getString("payment_method"));
+
+		return order;
+	}
+
+	@Override
+	public boolean doDelete(int id) throws SQLException {
+
+		String deleteSQL = "DELETE FROM " + TABLE_NAME + " WHERE id = ?";
+
+		try (Connection connection = ds.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
+
+			preparedStatement.setInt(1, id);
+
+			int result = preparedStatement.executeUpdate();
+
+			return result != 0;
+		}
+	}
 }

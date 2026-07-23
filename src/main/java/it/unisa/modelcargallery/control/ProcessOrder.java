@@ -26,222 +26,153 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/ProcessOrder")
 public class ProcessOrder extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private OrderDao orderDao;
+	private OrderDao orderDao;
 
-    @Override
-    public void init(ServletConfig config)
-            throws ServletException {
+	@Override
+	public void init(ServletConfig config) throws ServletException {
 
-        super.init(config);
+		super.init(config);
 
-        DataSource ds =
-            (DataSource) getServletContext()
-                .getAttribute("DataSource");
+		DataSource ds = (DataSource) getServletContext().getAttribute("DataSource");
 
-        if (ds == null) {
-            throw new ServletException(
-                "DataSource non disponibile"
-            );
-        }
+		if (ds == null) {
+			throw new ServletException("DataSource non disponibile");
+		}
 
-        orderDao = new OrderDaoImpl(ds);
-    }
+		orderDao = new OrderDaoImpl(ds);
+	}
 
-    @Override
-    protected void doPost(
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws ServletException, IOException {
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-        request.setCharacterEncoding("UTF-8");
+		HttpSession session = request.getSession(false);
 
-        HttpSession session =
-            request.getSession(false);
+		if (session == null) {
+			response.sendRedirect(request.getContextPath() + "/product");
+			return;
+		}
 
-        if (session == null) {
-            response.sendRedirect(
-                request.getContextPath() + "/product"
-            );
-            return;
-        }
+		UserBean user = (UserBean) session.getAttribute("user");
 
-        UserBean user =
-            (UserBean) session.getAttribute("user");
+		String authToken = (String) session.getAttribute("authToken");
 
-        String authToken =
-            (String) session.getAttribute("authToken");
+		if (user == null || authToken == null) {
+			response.sendRedirect(request.getContextPath() + "/product?loginRequired=true");
+			return;
+		}
 
-        if (user == null || authToken == null) {
-            response.sendRedirect(
-                request.getContextPath() +
-                "/product?loginRequired=true"
-            );
-            return;
-        }
+		CartBean cart = (CartBean) session.getAttribute("cart");
 
-        CartBean cart =
-            (CartBean) session.getAttribute("cart");
+		if (cart == null || cart.getProducts() == null || cart.getProducts().isEmpty()) {
 
-        if (cart == null ||
-                cart.getProducts() == null ||
-                cart.getProducts().isEmpty()) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Il carrello è vuoto");
 
-            response.sendError(
-                HttpServletResponse.SC_BAD_REQUEST,
-                "Il carrello è vuoto"
-            );
+			return;
+		}
 
-            return;
-        }
+		List<OrderItemBean> items = new ArrayList<OrderItemBean>();
 
-        List<OrderItemBean> items =
-            new ArrayList<OrderItemBean>();
+		float total = 0;
 
-        float total = 0;
+		for (ProductBean product : cart.getProducts()) {
 
-        for (ProductBean product :
-                cart.getProducts()) {
+			total += product.getPrice();
 
-            total += product.getPrice();
+			OrderItemBean itemTrovato = null;
 
-            OrderItemBean itemTrovato = null;
+			for (OrderItemBean item : items) {
 
-            for (OrderItemBean item : items) {
+				if (item.getProductCode() == product.getCode()) {
 
-                if (item.getProductCode() ==
-                        product.getCode()) {
+					itemTrovato = item;
+					break;
+				}
+			}
 
-                    itemTrovato = item;
-                    break;
-                }
-            }
+			if (itemTrovato == null) {
 
-            if (itemTrovato == null) {
+				OrderItemBean nuovoItem = new OrderItemBean();
 
-                OrderItemBean nuovoItem =
-                    new OrderItemBean();
+				nuovoItem.setProductCode(product.getCode());
 
-                nuovoItem.setProductCode(
-                    product.getCode()
-                );
+				nuovoItem.setProductName(product.getName());
 
-                nuovoItem.setProductName(
-                    product.getName()
-                );
+				nuovoItem.setUnitPrice(product.getPrice());
 
-                nuovoItem.setUnitPrice(
-                    product.getPrice()
-                );
+				nuovoItem.setQuantity(1);
 
-                nuovoItem.setQuantity(1);
+				items.add(nuovoItem);
 
-                items.add(nuovoItem);
+			} else {
 
-            } else {
+				itemTrovato.setQuantity(itemTrovato.getQuantity() + 1);
+			}
+		}
 
-                itemTrovato.setQuantity(
-                    itemTrovato.getQuantity() + 1
-                );
-            }
-        }
+		String name = request.getParameter("name");
 
-        String name =
-            request.getParameter("name");
+		String surname = request.getParameter("surname");
 
-        String surname =
-            request.getParameter("surname");
+		String address = request.getParameter("address");
 
-        String address =
-            request.getParameter("address");
+		String number = request.getParameter("number");
 
-        String number =
-            request.getParameter("number");
+		String paymentMethod = request.getParameter("paymentMethod");
 
-        String paymentMethod =
-            request.getParameter("paymentMethod");
+		int numberAddress;
 
-        int numberAddress;
+		try {
+			numberAddress = Integer.parseInt(number);
 
-        try {
-            numberAddress =
-                Integer.parseInt(number);
+		} catch (NumberFormatException e) {
 
-        } catch (NumberFormatException e) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Numero civico non valido");
 
-            response.sendError(
-                HttpServletResponse.SC_BAD_REQUEST,
-                "Numero civico non valido"
-            );
+			return;
+		}
 
-            return;
-        }
+		if (paymentMethod == null || paymentMethod.isEmpty()) {
 
-        if (paymentMethod == null ||
-                paymentMethod.isEmpty()) {
+			paymentMethod = "NON_SPECIFICATO";
+		}
 
-            paymentMethod = "NON_SPECIFICATO";
-        }
+		OrderBean order = new OrderBean();
 
-        OrderBean order = new OrderBean();
+		order.setUserId(user.getId());
 
-        order.setUserId(
-            user.getId()
-        );
+		order.setName(name);
+		order.setSurname(surname);
+		order.setAddress(address);
+		order.setNumberAddress(numberAddress);
 
-        order.setName(name);
-        order.setSurname(surname);
-        order.setAddress(address);
-        order.setNumberAddress(numberAddress);
+		order.setMail(user.getUsername());
 
-        order.setMail(
-            user.getUsername()
-        );
+		order.setTotal(total);
+		order.setPaymentMethod(paymentMethod);
+		order.setItems(items);
 
-        order.setTotal(total);
-        order.setPaymentMethod(paymentMethod);
-        order.setItems(items);
+		try {
+			orderDao.doSave(order);
+			cart.getProducts().clear();
 
-        try {
-            orderDao.doSave(order);
+			request.setAttribute("order", order);
 
-            // Il carrello viene svuotato solo
-            // dopo il salvataggio dell'ordine
-            cart.getProducts().clear();
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/Fattura.jsp");
 
-            request.setAttribute(
-                "order",
-                order
-            );
+			dispatcher.forward(request, response);
 
-            RequestDispatcher dispatcher =
-                request.getRequestDispatcher(
-                    "/WEB-INF/view/Fattura.jsp"
-                );
+		} catch (SQLException e) {
 
-            dispatcher.forward(
-                request,
-                response
-            );
+			throw new ServletException("Errore durante il salvataggio dell'ordine", e);
+		}
+	}
 
-        } catch (SQLException e) {
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-            throw new ServletException(
-                "Errore durante il salvataggio dell'ordine",
-                e
-            );
-        }
-    }
-
-    @Override
-    protected void doGet(
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws IOException {
-
-        response.sendError(
-            HttpServletResponse.SC_METHOD_NOT_ALLOWED
-        );
-    }
+		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+	}
 }

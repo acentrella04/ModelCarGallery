@@ -105,8 +105,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             value = value.substring(0, 19);
 
-            cardInput.value =
-                value.replace(/(.{4})/g, "$1 ").trim();
+            cardInput.value =value.replace(/(.{4})/g, "$1 ").trim();
         });
     }
     var expirationInput = document.getElementById("expireSpace");
@@ -115,16 +114,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
         expirationInput.addEventListener("input", function() {
 
-            var value =
-                expirationInput.value.replace(/\D/g, "");
+            var value =expirationInput.value.replace(/\D/g, "");
 
             value = value.substring(0, 4);
 
             if (value.length > 2) {
-                value =
-                    value.substring(0, 2)
-                    + "/"
-                    + value.substring(2);
+                value =value.substring(0, 2)+ "/"+ value.substring(2);
             }
 
             expirationInput.value = value;
@@ -136,19 +131,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
         cvvInput.addEventListener("input", function() {
 
-            cvvInput.value =
-                cvvInput.value
-                    .replace(/\D/g, "")
-                    .substring(0, 4);
+            cvvInput.value =cvvInput.value.replace(/\D/g, "").substring(0, 4);
         });
     }
 });
 
 
-/*
- * Collega la validazione a un form.
- * fields contiene l'id del campo e la relativa funzione.
- */
 function configureForm(formId, fields) {
 
     var form = document.getElementById(formId);
@@ -164,10 +152,7 @@ function configureForm(formId, fields) {
 
         if (input != null) {
 
-            bindChangeValidation(
-                input,
-                rule.validator
-            );
+            bindChangeValidation(input,rule.validator);
         }
     }
 
@@ -183,11 +168,7 @@ function configureForm(formId, fields) {
 
             if (input != null) {
 
-                var fieldIsValid =
-                    validateField(
-                        input,
-                        rule.validator
-                    );
+                var fieldIsValid =validateField(input,rule.validator);
 
                 if (!fieldIsValid) {
 
@@ -200,10 +181,6 @@ function configureForm(formId, fields) {
             }
         }
 
-        /*
-         * Se almeno un campo non è valido,
-         * impedisce l'invio dei dati al server.
-         */
         if (!formIsValid) {
 
             event.preventDefault();
@@ -216,40 +193,21 @@ function configureForm(formId, fields) {
 }
 
 
-/*
- * Esegue il controllo quando l'utente
- * termina la modifica del campo.
- */
 function bindChangeValidation(input, validator) {
 
     input.addEventListener("change", function() {
 
-        validateField(
-            input,
-            validator
-        );
+        validateField(input,validator);
     });
 }
 
-
-/*
- * Valida un singolo campo.
- * La funzione validator restituisce:
- *
- * - una stringa vuota se il valore è valido;
- * - un messaggio se il valore non è valido.
- */
 function validateField(input, validator) {
 
-    var errorMessage =
-        validator(input.value);
+    var errorMessage =validator(input.value);
 
     if (errorMessage !== "") {
 
-        showError(
-            input,
-            errorMessage
-        );
+        showError(input,errorMessage);
 
         return false;
     }
@@ -260,30 +218,20 @@ function validateField(input, validator) {
 }
 
 
-/*
- * Mostra il messaggio di errore nel DOM,
- * subito dopo il campo.
- */
 function showError(input, message) {
 
-    var errorId =
-        input.id + "Error";
+    var errorId =input.id + "Error";
 
-    var errorElement =
-        document.getElementById(errorId);
+    var errorElement =document.getElementById(errorId);
 
     if (errorElement == null) {
 
-        errorElement =
-            document.createElement("span");
+        errorElement =document.createElement("span");
 
         errorElement.id = errorId;
         errorElement.className = "field-error";
 
-        input.insertAdjacentElement(
-            "afterend",
-            errorElement
-        );
+        input.insertAdjacentElement("afterend",errorElement);
     }
 
     errorElement.textContent = message;
@@ -291,29 +239,16 @@ function showError(input, message) {
     input.classList.add("input-invalid");
     input.classList.remove("input-valid");
 
-    input.setAttribute(
-        "aria-invalid",
-        "true"
-    );
+    input.setAttribute("aria-invalid","true");
 
-    input.setAttribute(
-        "aria-describedby",
-        errorId
-    );
+    input.setAttribute("aria-describedby",errorId);
 }
 
-
-/*
- * Elimina il messaggio di errore
- * e mostra il campo come valido.
- */
 function clearError(input) {
 
-    var errorId =
-        input.id + "Error";
+    var errorId =input.id + "Error";
 
-    var errorElement =
-        document.getElementById(errorId);
+    var errorElement =document.getElementById(errorId);
 
     if (errorElement != null) {
         errorElement.textContent = "";
@@ -322,16 +257,9 @@ function clearError(input) {
     input.classList.remove("input-invalid");
     input.classList.add("input-valid");
 
-    input.setAttribute(
-        "aria-invalid",
-        "false"
-    );
+    input.setAttribute("aria-invalid","false");
 }
 
-
-/* =========================
-   VALIDAZIONE LOGIN
-   ========================= */
 
 function validateEmail(value) {
 
@@ -341,8 +269,7 @@ function validateEmail(value) {
         return "Inserisci l'indirizzo email.";
     }
 
-    var emailRegex =
-        /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    var emailRegex =/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 
     if (!emailRegex.test(email)) {
         return "Inserisci un indirizzo email valido.";
@@ -361,11 +288,6 @@ function validateLoginPassword(value) {
     return "";
 }
 
-
-/* =========================
-   VALIDAZIONE REGISTRAZIONE
-   ========================= */
-
 function validateRegistrationPassword(value) {
 
     if (value === "") {
@@ -376,8 +298,7 @@ function validateRegistrationPassword(value) {
         return "La password deve contenere almeno 8 caratteri.";
     }
 
-    var passwordRegex =
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$/;
+    var passwordRegex =/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$/;
 
     if (!passwordRegex.test(value)) {
         return "La password deve contenere una maiuscola, una minuscola e un numero.";
@@ -387,10 +308,6 @@ function validateRegistrationPassword(value) {
 }
 
 
-/* =========================
-   VALIDAZIONE DATI PERSONALI
-   ========================= */
-
 function validatePersonName(value) {
 
     var name = value.trim();
@@ -399,8 +316,7 @@ function validatePersonName(value) {
         return "Questo campo è obbligatorio.";
     }
 
-    var nameRegex =
-        /^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}$/;
+    var nameRegex =/^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,30}$/;
 
     if (!nameRegex.test(name)) {
         return "Usa solo lettere, spazi, apostrofi o trattini.";
@@ -418,8 +334,7 @@ function validateAddress(value) {
         return "Inserisci l'indirizzo.";
     }
 
-    var addressRegex =
-        /^[A-Za-zÀ-ÖØ-öø-ÿ0-9'.,/ -]{5,80}$/;
+    var addressRegex =/^[A-Za-zÀ-ÖØ-öø-ÿ0-9'.,/ -]{5,80}$/;
 
     if (!addressRegex.test(address)) {
         return "L'indirizzo contiene caratteri non validi.";
@@ -437,8 +352,7 @@ function validateHouseNumber(value) {
         return "Inserisci il numero civico.";
     }
 
-    var numberRegex =
-        /^[0-9]{1,5}[A-Za-z]?$/;
+    var numberRegex =/^[0-9]{1,5}[A-Za-z]?$/;
 
     if (!numberRegex.test(number)) {
         return "Inserisci un numero civico valido, ad esempio 14 oppure 14A.";
@@ -448,21 +362,15 @@ function validateHouseNumber(value) {
 }
 
 
-/* =========================
-   VALIDAZIONE PAGAMENTO
-   ========================= */
-
 function validateCardNumber(value) {
 
-    var cardNumber =
-        value.replace(/[\s-]/g, "");
+    var cardNumber =value.replace(/[\s-]/g, "");
 
     if (cardNumber === "") {
         return "Inserisci il numero della carta.";
     }
 
-    var cardRegex =
-        /^[0-9]{13,19}$/;
+    var cardRegex =/^[0-9]{13,19}$/;
 
     if (!cardRegex.test(cardNumber)) {
         return "Il numero della carta deve contenere da 13 a 19 cifre.";
@@ -477,37 +385,28 @@ function validateExpirationDate(value) {
     var expiration = value.trim();
 
     if (expiration === "") {
-        return "Inserisci la data di scadenza.";
+		return "Inserisci la data di scadenza.";
     }
 
-    var expirationRegex =
-        /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
+    var expirationRegex =/^(0[1-9]|1[0-2])\/([0-9]{2})$/;
 
-    var result =
-        expirationRegex.exec(expiration);
+    var result =expirationRegex.exec(expiration);
 
     if (result == null) {
         return "Usa il formato MM/AA, ad esempio 09/28.";
     }
 
-    var month =
-        parseInt(result[1], 10);
+    var month =parseInt(result[1], 10);
 
-    var year =
-        2000 + parseInt(result[2], 10);
+    var year =2000 + parseInt(result[2], 10);
 
-    var currentDate =
-        new Date();
+    var currentDate =new Date();
 
-    var currentMonth =
-        currentDate.getMonth() + 1;
+    var currentMonth =currentDate.getMonth() + 1;
 
-    var currentYear =
-        currentDate.getFullYear();
+    var currentYear =currentDate.getFullYear();
 
-    if (year < currentYear ||
-        (year === currentYear &&
-            month < currentMonth)) {
+    if (year < currentYear ||(year === currentYear &&month < currentMonth)) {
 
         return "La carta risulta scaduta.";
     }
@@ -524,8 +423,7 @@ function validateCvv(value) {
         return "Inserisci il codice CVV.";
     }
 
-    var cvvRegex =
-        /^[0-9]{3,4}$/;
+    var cvvRegex =/^[0-9]{3,4}$/;
 
     if (!cvvRegex.test(cvv)) {
         return "Il CVV deve contenere 3 o 4 cifre.";
@@ -535,10 +433,6 @@ function validateCvv(value) {
 }
 
 
-/* =========================
-   VALIDAZIONE PRODOTTI
-   ========================= */
-
 function validateProductName(value) {
 
     var productName = value.trim();
@@ -547,14 +441,12 @@ function validateProductName(value) {
         return "Inserisci il nome del prodotto.";
     }
 
-    if (productName.length < 3 ||
-        productName.length > 100) {
+    if (productName.length < 3 ||productName.length > 100) {
 
         return "Il nome deve contenere da 3 a 100 caratteri.";
     }
 
-    var productNameRegex =
-        /^[A-Za-zÀ-ÖØ-öø-ÿ0-9#'.,/&()\- ]+$/;
+    var productNameRegex =/^[A-Za-zÀ-ÖØ-öø-ÿ0-9#'.,/&()\- ]+$/;
 
     if (!productNameRegex.test(productName)) {
         return "Il nome del prodotto contiene caratteri non validi.";
@@ -572,8 +464,7 @@ function validateDescription(value) {
         return "Inserisci una descrizione.";
     }
 
-    if (description.length < 3 ||
-        description.length > 100) {
+    if (description.length < 3 ||description.length > 100) {
 
         return "La descrizione deve contenere da 3 a 100 caratteri.";
     }
@@ -588,8 +479,7 @@ function validatePrice(value) {
         return "Inserisci il prezzo.";
     }
 
-    var price =
-        parseFloat(value);
+    var price =parseFloat(value);
 
     if (isNaN(price)) {
         return "Il prezzo deve essere un numero.";
@@ -609,8 +499,7 @@ function validateQuantity(value) {
         return "Inserisci la quantità.";
     }
 
-    var quantity =
-        Number(value);
+    var quantity =Number(value);
 
     if (!Number.isInteger(quantity)) {
         return "La quantità deve essere un numero intero.";
@@ -624,62 +513,41 @@ function validateQuantity(value) {
 }
 function configureEmailAvailability() {
 
-    var registrationForm =
-        document.getElementById("registrationForm");
+    var registrationForm =document.getElementById("registrationForm");
 
-    /*
-     * Il campo mailSpace esiste anche nel login.
-     * Il controllo AJAX deve essere eseguito
-     * solamente nella pagina di registrazione.
-     */
     if (registrationForm == null) {
         return;
     }
 
-    var emailInput =
-        document.getElementById("mailSpace");
+    var emailInput =document.getElementById("mailSpace");
 
-    var messageElement =
-        document.getElementById(
-            "emailAvailabilityMessage"
-        );
+    var messageElement =document.getElementById("emailAvailabilityMessage");
 
-    if (emailInput == null ||
-        messageElement == null) {
+    if (emailInput == null ||messageElement == null) {
 
         return;
     }
 
     emailInput.addEventListener("change", function() {
 
-        var email =
-            emailInput.value.trim();
+        var email =emailInput.value.trim();
 
-        var localError =
-            validateEmail(email);
+        var localError =validateEmail(email);
 
         if (localError !== "") {
 
-            clearAvailabilityMessage(
-                messageElement
-            );
+            clearAvailabilityMessage(messageElement);
 
             return;
         }
 
-        messageElement.textContent =
-            "Controllo email in corso...";
+        messageElement.textContent ="Controllo email in corso...";
 
-        messageElement.className =
-            "availability-message checking";
+        messageElement.className ="availability-message checking";
 
-        var contextPath =
-            document.body.dataset.contextPath || "";
+        var contextPath =document.body.dataset.contextPath || "";
 
-        var url =
-            contextPath
-            + "/check-email?mail="
-            + encodeURIComponent(email);
+        var url =contextPath+ "/check-email?mail="+ encodeURIComponent(email);
 
         fetch(url, {
             method: "GET",
@@ -690,9 +558,7 @@ function configureEmailAvailability() {
             .then(function(response) {
 
                 if (!response.ok) {
-                    throw new Error(
-                        "Errore nella risposta del server"
-                    );
+                    throw new Error("Errore nella risposta del server");
                 }
 
                 return response.text();
@@ -703,20 +569,15 @@ function configureEmailAvailability() {
 
                     clearError(emailInput);
 
-                    messageElement.textContent =
-                        "Email disponibile.";
+                    messageElement.textContent ="Email disponibile.";
 
-                    messageElement.className =
-                        "availability-message available";
+                    messageElement.className ="availability-message available";
 
                 } else if (result === "taken") {
 
                     clearAvailabilityMessage(messageElement);
 
-                    showError(
-                        emailInput,
-                        "Questa email è già registrata."
-                    );
+                    showError(emailInput,"Questa email è già registrata.");
 
                 } else {
 
@@ -725,25 +586,18 @@ function configureEmailAvailability() {
             })
             .catch(function(error) {
 
-                messageElement.textContent =
-                    "Impossibile verificare l'email in questo momento.";
+                messageElement.textContent ="Impossibile verificare l'email in questo momento.";
 
-                messageElement.className =
-                    "availability-message not-available";
+                messageElement.className ="availability-message not-available";
 
                 console.error(error);
             });
     });
 
-    /*
-     * Se l'utente modifica nuovamente l'email,
-     * viene eliminato il vecchio risultato.
-     */
+
     emailInput.addEventListener("input", function() {
 
-        clearAvailabilityMessage(
-            messageElement
-        );
+        clearAvailabilityMessage(messageElement);
     });
 }
 
@@ -752,6 +606,5 @@ function clearAvailabilityMessage(messageElement) {
 
     messageElement.textContent = "";
 
-    messageElement.className =
-        "availability-message";
+    messageElement.className ="availability-message";
 }

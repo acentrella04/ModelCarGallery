@@ -28,4 +28,3 @@ public class MainContext implements ServletContextListener {
 	public void contextDestroyed(ServletContextEvent sce) {
 	}
 }
-

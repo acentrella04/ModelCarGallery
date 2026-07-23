@@ -20,73 +20,46 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/admin/orders")
 public class AdminOrders extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private OrderDao orderDao;
+	private OrderDao orderDao;
 
-    @Override
-    public void init(ServletConfig config)
-            throws ServletException {
+	@Override
+	public void init(ServletConfig config) throws ServletException {
 
-        super.init(config);
+		super.init(config);
 
-        DataSource ds =
-            (DataSource) getServletContext()
-                .getAttribute("DataSource");
+		DataSource ds = (DataSource) getServletContext().getAttribute("DataSource");
 
-        if (ds == null) {
-            throw new ServletException(
-                "DataSource non disponibile"
-            );
-        }
+		if (ds == null) {
+			throw new ServletException("DataSource non disponibile");
+		}
 
-        orderDao = new OrderDaoImpl(ds);
-    }
+		orderDao = new OrderDaoImpl(ds);
+	}
 
-    @Override
-    protected void doGet(
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws ServletException, IOException {
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-        String from =
-            request.getParameter("from");
+		String from = request.getParameter("from");
 
-        String to =
-            request.getParameter("to");
+		String to = request.getParameter("to");
 
-        String mail =
-            request.getParameter("mail");
+		String mail = request.getParameter("mail");
 
-        try {
-            Collection<OrderBean> orders =
-                orderDao.doRetrieveAll(
-                    from,
-                    to,
-                    mail
-                );
+		try {
+			Collection<OrderBean> orders = orderDao.doRetrieveAll(from, to, mail);
 
-            request.setAttribute(
-                "orders",
-                orders
-            );
+			request.setAttribute("orders", orders);
 
-            RequestDispatcher dispatcher =
-                request.getRequestDispatcher(
-                    "/WEB-INF/view/admin/orders.jsp"
-                );
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/admin/orders.jsp");
 
-            dispatcher.forward(
-                request,
-                response
-            );
+			dispatcher.forward(request, response);
 
-        } catch (SQLException e) {
+		} catch (SQLException e) {
 
-            throw new ServletException(
-                "Errore nel recupero degli ordini",
-                e
-            );
-        }
-    }
+			throw new ServletException("Errore nel recupero degli ordini", e);
+		}
+	}
 }

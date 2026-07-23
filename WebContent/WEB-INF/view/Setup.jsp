@@ -46,17 +46,13 @@ if (errors != null && !errors.isEmpty()) {
 <%
 }
 
-Object mailValue =
-        request.getAttribute("mailValue");
+Object mailValue =request.getAttribute("mailValue");
 %>
 
 
 <main>
 
-    <form id="registrationForm"
-          action="<%=request.getContextPath()%>/regServlet"
-          method="post"
-          novalidate>
+    <form id="registrationForm"action="<%=request.getContextPath()%>/regServlet"method="post"novalidate>
 
         <fieldset>
 
@@ -66,8 +62,6 @@ Object mailValue =
 
             <h1>Crea il tuo account</h1>
 
-
-            <!-- EMAIL -->
 
             <label for="mailSpace">
                 Email:
@@ -87,9 +81,6 @@ Object mailValue =
                   aria-live="polite">
             </span>
 
-
-            <!-- PASSWORD -->
-
             <label for="pwdSpace">
                 Password:
             </label>
@@ -108,8 +99,6 @@ Object mailValue =
                 una lettera maiuscola, una minuscola e un numero.
             </p>
 
-
-            <!-- PULSANTI -->
 
             <div class="login-actions">
 

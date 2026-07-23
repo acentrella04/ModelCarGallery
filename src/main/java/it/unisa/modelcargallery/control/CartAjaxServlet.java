@@ -22,292 +22,204 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/cart-ajax")
 public class CartAjaxServlet extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private ProductDao productDao;
+	private ProductDao productDao;
 
-    @Override
-    public void init(ServletConfig config)
-            throws ServletException {
+	@Override
+	public void init(ServletConfig config) throws ServletException {
 
-        super.init(config);
+		super.init(config);
 
-        DataSource ds =
-                (DataSource) getServletContext()
-                        .getAttribute("DataSource");
+		DataSource ds = (DataSource) getServletContext().getAttribute("DataSource");
 
-        if (ds == null) {
-            throw new ServletException(
-                    "DataSource non disponibile nel contesto"
-            );
-        }
+		if (ds == null) {
+			throw new ServletException("DataSource non disponibile nel contesto");
+		}
 
-        productDao = new ProductDaoImpl(ds);
-    }
+		productDao = new ProductDaoImpl(ds);
+	}
 
-    @Override
-    protected void doPost(
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws ServletException, IOException {
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-        request.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json");
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+		HttpSession session = request.getSession();
 
-        HttpSession session =
-                request.getSession();
+		CartBean cart = (CartBean) session.getAttribute("cart");
 
-        CartBean cart =
-                (CartBean) session.getAttribute("cart");
+		if (cart == null) {
+			cart = new CartBean();
+			session.setAttribute("cart", cart);
+		}
 
-        if (cart == null) {
-            cart = new CartBean();
-            session.setAttribute("cart", cart);
-        }
+		String action = request.getParameter("action");
 
-        String action =
-                request.getParameter("action");
+		if (action == null || action.trim().isEmpty()) {
 
-        if (action == null ||
-                action.trim().isEmpty()) {
+			sendError(response, HttpServletResponse.SC_BAD_REQUEST, "Azione del carrello non specificata");
 
-            sendError(
-                    response,
-                    HttpServletResponse.SC_BAD_REQUEST,
-                    "Azione del carrello non specificata"
-            );
+			return;
+		}
 
-            return;
-        }
+		try {
 
-        try {
+			if ("addC".equalsIgnoreCase(action)) {
 
-            if ("addC".equalsIgnoreCase(action)) {
+				int code = readProductCode(request);
 
-                int code = readProductCode(request);
+				ProductBean product = productDao.doRetrieveByKey(code);
 
-                ProductBean product =
-                        productDao.doRetrieveByKey(code);
+				if (product == null || product.getCode() == 0) {
 
-                /*
-                 * Nel tuo ProductDaoImpl, se il prodotto non esiste,
-                 * viene restituito un ProductBean con code uguale a 0.
-                 */
-                if (product == null ||
-                        product.getCode() == 0) {
+					sendError(response, HttpServletResponse.SC_NOT_FOUND, "Prodotto non trovato");
 
-                    sendError(
-                            response,
-                            HttpServletResponse.SC_NOT_FOUND,
-                            "Prodotto non trovato"
-                    );
+					return;
+				}
 
-                    return;
-                }
+				cart.addProduct(product);
 
-                cart.addProduct(product);
+			} else if ("deleteC".equalsIgnoreCase(action)) {
 
-            } else if ("deleteC".equalsIgnoreCase(action)) {
+				int code = readProductCode(request);
 
-                int code = readProductCode(request);
+				cart.deleteOneProduct(code);
 
-                cart.deleteOneProduct(code);
+			} else if ("removeAllC".equalsIgnoreCase(action)) {
 
-            } else if ("removeAllC".equalsIgnoreCase(action)) {
+				int code = readProductCode(request);
 
-                int code = readProductCode(request);
+				cart.deleteAllProducts(code);
 
-                cart.deleteAllProducts(code);
+			} else if ("clearC".equalsIgnoreCase(action)) {
 
-            } else if ("clearC".equalsIgnoreCase(action)) {
+				cart.clearCart();
 
-                cart.clearCart();
+			} else {
 
-            } else {
+				sendError(response, HttpServletResponse.SC_BAD_REQUEST, "Azione del carrello non valida");
 
-                sendError(
-                        response,
-                        HttpServletResponse.SC_BAD_REQUEST,
-                        "Azione del carrello non valida"
-                );
+				return;
+			}
 
-                return;
-            }
+			session.setAttribute("cart", cart);
 
-            session.setAttribute("cart", cart);
+			writeCartJson(response, cart);
 
-            writeCartJson(response, cart);
+		} catch (NumberFormatException e) {
 
-        } catch (NumberFormatException e) {
+			sendError(response, HttpServletResponse.SC_BAD_REQUEST, "Codice prodotto non valido");
 
-            sendError(
-                    response,
-                    HttpServletResponse.SC_BAD_REQUEST,
-                    "Codice prodotto non valido"
-            );
+		} catch (SQLException e) {
 
-        } catch (SQLException e) {
+			throw new ServletException("Errore durante la gestione AJAX del carrello", e);
+		}
+	}
 
-            throw new ServletException(
-                    "Errore durante la gestione AJAX del carrello",
-                    e
-            );
-        }
-    }
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    @Override
-    protected void doGet(
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws IOException {
+		response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Usare il metodo POST");
+	}
 
-        response.sendError(
-                HttpServletResponse.SC_METHOD_NOT_ALLOWED,
-                "Usare il metodo POST"
-        );
-    }
+	private int readProductCode(HttpServletRequest request) {
 
-    private int readProductCode(
-            HttpServletRequest request) {
+		String code = request.getParameter("code");
 
-        String code =
-                request.getParameter("code");
+		if (code == null || code.trim().isEmpty()) {
 
-        if (code == null ||
-                code.trim().isEmpty()) {
+			throw new NumberFormatException("Codice prodotto assente");
+		}
 
-            throw new NumberFormatException(
-                    "Codice prodotto assente"
-            );
-        }
+		return Integer.parseInt(code);
+	}
 
-        return Integer.parseInt(code);
-    }
+	private void writeCartJson(HttpServletResponse response, CartBean cart) throws IOException {
 
-    private void writeCartJson(
-            HttpServletResponse response,
-            CartBean cart)
-            throws IOException {
+		List<ProductBean> distinctProducts = cart.getDistinctProducts();
 
-        List<ProductBean> distinctProducts =
-                cart.getDistinctProducts();
+		StringBuilder json = new StringBuilder();
 
-        StringBuilder json =
-                new StringBuilder();
+		json.append("{");
 
-        json.append("{");
+		json.append("\"success\":true,");
 
-        json.append("\"success\":true,");
+		json.append("\"count\":");
+		json.append(cart.getProducts().size());
+		json.append(",");
 
-        json.append("\"count\":");
-        json.append(cart.getProducts().size());
-        json.append(",");
+		json.append("\"total\":");
+		json.append(formatNumber(cart.getTotal()));
+		json.append(",");
 
-        json.append("\"total\":");
-        json.append(formatNumber(cart.getTotal()));
-        json.append(",");
+		json.append("\"items\":[");
 
-        json.append("\"items\":[");
+		for (int i = 0; i < distinctProducts.size(); i++) {
 
-        for (int i = 0;
-             i < distinctProducts.size();
-             i++) {
+			ProductBean product = distinctProducts.get(i);
 
-            ProductBean product =
-                    distinctProducts.get(i);
+			int quantity = cart.getQuantity(product.getCode());
 
-            int quantity =
-                    cart.getQuantity(
-                            product.getCode()
-                    );
+			float subtotal = product.getPrice() * quantity;
 
-            float subtotal =
-                    product.getPrice() * quantity;
+			json.append("{");
 
-            json.append("{");
+			json.append("\"code\":");
+			json.append(product.getCode());
+			json.append(",");
 
-            json.append("\"code\":");
-            json.append(product.getCode());
-            json.append(",");
+			json.append("\"name\":\"");
+			json.append(escapeJson(product.getName()));
+			json.append("\",");
 
-            json.append("\"name\":\"");
-            json.append(
-                    escapeJson(product.getName())
-            );
-            json.append("\",");
+			json.append("\"price\":");
+			json.append(formatNumber(product.getPrice()));
+			json.append(",");
 
-            json.append("\"price\":");
-            json.append(
-                    formatNumber(product.getPrice())
-            );
-            json.append(",");
+			json.append("\"quantity\":");
+			json.append(quantity);
+			json.append(",");
 
-            json.append("\"quantity\":");
-            json.append(quantity);
-            json.append(",");
+			json.append("\"subtotal\":");
+			json.append(formatNumber(subtotal));
 
-            json.append("\"subtotal\":");
-            json.append(formatNumber(subtotal));
+			json.append("}");
 
-            json.append("}");
+			if (i < distinctProducts.size() - 1) {
+				json.append(",");
+			}
+		}
 
-            if (i < distinctProducts.size() - 1) {
-                json.append(",");
-            }
-        }
+		json.append("]");
 
-        json.append("]");
+		json.append("}");
 
-        json.append("}");
+		response.getWriter().write(json.toString());
+	}
 
-        response.getWriter().write(
-                json.toString()
-        );
-    }
+	private void sendError(HttpServletResponse response, int status, String message) throws IOException {
 
-    private void sendError(
-            HttpServletResponse response,
-            int status,
-            String message)
-            throws IOException {
+		response.setStatus(status);
 
-        response.setStatus(status);
+		String json = "{" + "\"success\":false," + "\"message\":\"" + escapeJson(message) + "\"" + "}";
 
-        String json =
-                "{"
-                + "\"success\":false,"
-                + "\"message\":\""
-                + escapeJson(message)
-                + "\""
-                + "}";
+		response.getWriter().write(json);
+	}
 
-        response.getWriter().write(json);
-    }
+	private String formatNumber(float number) {
 
-    private String formatNumber(float number) {
+		return String.format(Locale.US, "%.2f", number);
+	}
 
-        return String.format(
-                Locale.US,
-                "%.2f",
-                number
-        );
-    }
+	private String escapeJson(String value) {
 
-    private String escapeJson(String value) {
+		if (value == null) {
+			return "";
+		}
 
-        if (value == null) {
-            return "";
-        }
-
-        return value
-                .replace("\\", "\\\\")
-                .replace("\"", "\\\"")
-                .replace("\b", "\\b")
-                .replace("\f", "\\f")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r")
-                .replace("\t", "\\t");
-    }
+		return value.replace("\\", "\\\\").replace("\"", "\\\"").replace("\b", "\\b").replace("\f", "\\f")
+				.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t");
+	}
 }

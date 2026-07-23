@@ -16,8 +16,8 @@ import it.unisa.modelcargallery.model.UserBean;
 
 @WebServlet("/image")
 @MultipartConfig(maxFileSize = 5 * 1024 * 1024, // max 5 MB per file
-	maxRequestSize = 10 * 1024 * 1024, // max 10 MB per request
-	fileSizeThreshold = 2* 1024 * 1024) // 2 MB after which the file will be temporarily stored on disk
+		maxRequestSize = 10 * 1024 * 1024, // max 10 MB per request
+		fileSizeThreshold = 2 * 1024 * 1024) // 2 MB after which the file will be temporarily stored on disk
 public class ImageControl extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
@@ -44,70 +44,61 @@ public class ImageControl extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-	        throws ServletException, IOException {
+			throws ServletException, IOException {
 
-	    String action = request.getParameter("action");
+		String action = request.getParameter("action");
 
-	    if ("show".equalsIgnoreCase(action)) {
+		if ("show".equalsIgnoreCase(action)) {
 
-	        int productCode = Integer.parseInt(request.getParameter("code"));
+			int productCode = Integer.parseInt(request.getParameter("code"));
 
-	        try {
-	            ProductBean bean = productDao.doRetrieveByKey(productCode);
+			try {
+				ProductBean bean = productDao.doRetrieveByKey(productCode);
 
-	            String mimeType = bean.getMimeType();
-	            String nomeImmagine = bean.getImmagine_copertina();
+				String mimeType = bean.getMimeType();
+				String nomeImmagine = bean.getImmagine_copertina();
 
-	            if (nomeImmagine == null || nomeImmagine.isEmpty()) {
-	                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-	                return;
-	            }
+				if (nomeImmagine == null || nomeImmagine.isEmpty()) {
+					response.sendError(HttpServletResponse.SC_NOT_FOUND);
+					return;
+				}
 
-	            String imagePath = getServletContext().getRealPath(
-	                    File.separator + UPLOAD_DIR + File.separator + nomeImmagine
-	            );
+				String imagePath = getServletContext()
+						.getRealPath(File.separator + UPLOAD_DIR + File.separator + nomeImmagine);
 
-	            response.setContentType(mimeType);
+				response.setContentType(mimeType);
 
-	            try (InputStream is = new FileInputStream(imagePath);
-	                 OutputStream os = response.getOutputStream()) {
+				try (InputStream is = new FileInputStream(imagePath); OutputStream os = response.getOutputStream()) {
 
-	                is.transferTo(os);
-	            }
+					is.transferTo(os);
+				}
 
-	        } catch (SQLException e) {
-	            throw new ServletException("Errore nel recupero immagine", e);
-	        }
-	    }
+			} catch (SQLException e) {
+				throw new ServletException("Errore nel recupero immagine", e);
+			}
+		}
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		HttpSession session =request.getSession(false);
+		HttpSession session = request.getSession(false);
 
 		UserBean user = null;
 		String authToken = null;
 
 		if (session != null) {
 
-		    user =
-		        (UserBean) session.getAttribute("user");
+			user = (UserBean) session.getAttribute("user");
 
-		    authToken =
-		        (String) session.getAttribute("authToken");
+			authToken = (String) session.getAttribute("authToken");
 		}
 
-		if (user == null ||
-		        authToken == null ||
-		        !"admin".equalsIgnoreCase(user.getRole())) {
+		if (user == null || authToken == null || !"admin".equalsIgnoreCase(user.getRole())) {
 
-		    response.sendError(
-		        HttpServletResponse.SC_FORBIDDEN,
-		        "Caricamento non autorizzato"
-		    );
+			response.sendError(HttpServletResponse.SC_FORBIDDEN, "Caricamento non autorizzato");
 
-		    return;
+			return;
 		}
 		String action = request.getParameter("action");
 		if ("upload".equalsIgnoreCase(action)) {
@@ -118,7 +109,8 @@ public class ImageControl extends HttpServlet {
 				if (originalFileName != null && !originalFileName.isEmpty() && part.getSize() > 0) {
 					String mimeType = part.getContentType();
 					String uniqueFileName = buildUniqueFileName(part);
-					String uploadImmagine_copertina = getServletContext().getRealPath(File.separator + UPLOAD_DIR + File.separator + uniqueFileName);
+					String uploadImmagine_copertina = getServletContext()
+							.getRealPath(File.separator + UPLOAD_DIR + File.separator + uniqueFileName);
 					ProductBean bean = new ProductBean();
 					bean.setCode(productCode);
 					bean.setMimeType(mimeType);
@@ -133,20 +125,19 @@ public class ImageControl extends HttpServlet {
 				}
 			}
 		}
-		
-		response.sendRedirect(request.getContextPath() + "/admin/welcome" );
+
+		response.sendRedirect(request.getContextPath() + "/admin/welcome");
 	}
 
 	private String buildUniqueFileName(Part part) {
 		String originalName = part.getSubmittedFileName();
 		String extension;
 		if (originalName.contains(".")) {
-		    extension = originalName.substring(originalName.lastIndexOf("."));
+			extension = originalName.substring(originalName.lastIndexOf("."));
 		} else {
-		    extension = "";
+			extension = "";
 		}
 		return UUID.randomUUID() + extension;
 	}
-	
-	
+
 }

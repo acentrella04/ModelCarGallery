@@ -65,9 +65,6 @@ List<ProductBean> distinctProducts =
 
 <main>
 
-    <!-- =========================
-         RIEPILOGO CARRELLO
-         ========================= -->
 
     <section class="order-card">
 
@@ -170,10 +167,6 @@ List<ProductBean> distinctProducts =
     </section>
 
 
-    <!-- =========================
-         DATI ORDINE
-         ========================= -->
-
     <%
     if (!cartIsEmpty) {
     %>
@@ -185,8 +178,6 @@ List<ProductBean> distinctProducts =
 
         <h2>Dati di spedizione</h2>
 
-
-        <!-- NOME -->
 
         <label for="nameSpace">
             Nome:
@@ -201,8 +192,6 @@ List<ProductBean> distinctProducts =
                required>
 
 
-        <!-- COGNOME -->
-
         <label for="surnameSpace">
             Cognome:
         </label>
@@ -215,9 +204,6 @@ List<ProductBean> distinctProducts =
                placeholder="Rossi"
                required>
 
-
-        <!-- INDIRIZZO -->
-
         <label for="addressSpace">
             Indirizzo:
         </label>
@@ -229,9 +215,6 @@ List<ProductBean> distinctProducts =
                autocomplete="street-address"
                placeholder="Via Roma"
                required>
-
-
-        <!-- NUMERO CIVICO -->
 
         <label for="numberSpace">
             Numero civico:
@@ -247,10 +230,7 @@ List<ProductBean> distinctProducts =
                required>
 
 
-        <!-- =========================
-             DATI DI PAGAMENTO
-             ========================= -->
-
+     
         <fieldset id="paymentSection">
 
             <legend>Dati di pagamento</legend>
@@ -259,8 +239,6 @@ List<ProductBean> distinctProducts =
                    name="paymentMethod"
                    value="Carta">
 
-
-            <!-- INTESTATARIO -->
 
             <div class="form-group">
 
@@ -278,8 +256,6 @@ List<ProductBean> distinctProducts =
 
             </div>
 
-
-            <!-- NUMERO CARTA -->
 
             <div class="form-group">
 
@@ -302,8 +278,6 @@ List<ProductBean> distinctProducts =
             <div class="payment-row">
 
 
-                <!-- SCADENZA -->
-
                 <div class="form-group">
 
                     <label for="expireSpace">
@@ -321,8 +295,6 @@ List<ProductBean> distinctProducts =
 
                 </div>
 
-
-                <!-- CVV -->
 
                 <div class="form-group">
 
@@ -346,11 +318,7 @@ List<ProductBean> distinctProducts =
         </fieldset>
 
 
-        <!-- CONFERMA -->
-
-        <input type="submit"
-               id="processOrder"
-               value="Conferma ordine">
+        <input type="submit"id="processOrder"value="Conferma ordine">
 
     </form>
 

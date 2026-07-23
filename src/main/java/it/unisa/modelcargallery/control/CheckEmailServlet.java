@@ -17,71 +17,57 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/check-email")
 public class CheckEmailServlet extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private UserDaoImpl userDao;
+	private UserDaoImpl userDao;
 
-    @Override
-    public void init(ServletConfig config)
-            throws ServletException {
+	@Override
+	public void init(ServletConfig config) throws ServletException {
 
-        super.init(config);
+		super.init(config);
 
-        DataSource ds =
-                (DataSource) getServletContext()
-                        .getAttribute("DataSource");
+		DataSource ds = (DataSource) getServletContext().getAttribute("DataSource");
 
-        if (ds == null) {
-            throw new ServletException(
-                    "DataSource non disponibile"
-            );
-        }
+		if (ds == null) {
+			throw new ServletException("DataSource non disponibile");
+		}
 
-        userDao = new UserDaoImpl(ds);
-    }
+		userDao = new UserDaoImpl(ds);
+	}
 
-    @Override
-    protected void doGet(
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws ServletException, IOException {
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-        response.setContentType("text/plain");
-        response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/plain");
 
-        String email =
-                request.getParameter("mail");
+		String email = request.getParameter("mail");
 
-        if (email == null || email.trim().isEmpty()) {
-            response.getWriter().write("invalid");
-            return;
-        }
+		if (email == null || email.trim().isEmpty()) {
+			response.getWriter().write("invalid");
+			return;
+		}
 
-        email = email.trim();
+		email = email.trim();
 
-        String emailRegex =
-                "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+		String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 
-        if (!email.matches(emailRegex)) {
-            response.getWriter().write("invalid");
-            return;
-        }
+		if (!email.matches(emailRegex)) {
+			response.getWriter().write("invalid");
+			return;
+		}
 
-        try {
-            UserBean existingUser =
-                    userDao.doRetrieveByUsername(email);
+		try {
+			UserBean existingUser = userDao.doRetrieveByUsername(email);
 
-            if (existingUser == null) {
-                response.getWriter().write("available");
-            } else {
-                response.getWriter().write("taken");
-            }
+			if (existingUser == null) {
+				response.getWriter().write("available");
+			} else {
+				response.getWriter().write("taken");
+			}
 
-        } catch (SQLException e) {
-            throw new ServletException(
-                    "Errore durante il controllo dell'email",
-                    e
-            );
-        }
-    }
+		} catch (SQLException e) {
+			throw new ServletException("Errore durante il controllo dell'email", e);
+		}
+	}
 }

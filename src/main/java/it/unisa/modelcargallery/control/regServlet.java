@@ -29,176 +29,128 @@ import it.unisa.modelcargallery.model.UserBean;
 @WebServlet("/regServlet")
 public class regServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public regServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-    @Override
-    protected void doGet(
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws ServletException, IOException {
+	public regServlet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-        request.getRequestDispatcher(
-                "/WEB-INF/view/Setup.jsp"
-        ).forward(request, response);
-    }
-       
-        
-        public static String toDigiset(String password) {
-    		try {
-    			MessageDigest md=MessageDigest.getInstance("SHA-512");
-    			byte[] digisetBytes=md.digest(password.getBytes(StandardCharsets.UTF_8));
-    			StringBuilder sb= new StringBuilder();
-    			
-    			for(byte b: digisetBytes) {
-    				sb.append(String.format("%02x", b));
-    			}
-    			return sb.toString();
-    		}catch(NoSuchAlgorithmException e) {
-    			throw new RuntimeException("Algoritmo SHA-512 non disponibile",e);
-    		}
-    	}
-    	
-    	private String validateField(String value, String fieldName, List<String> errors) {
-            if (value == null || value.trim().isEmpty()) {
-                errors.add("Il campo " + fieldName + " non può essere vuoto");
-                return "";
-            }
-            return value.trim();
-        }
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-    	@Override
-    	protected void doPost(
-    	        HttpServletRequest request,
-    	        HttpServletResponse response)
-    	        throws ServletException, IOException {
+		request.getRequestDispatcher("/WEB-INF/view/Setup.jsp").forward(request, response);
+	}
 
-    	    request.setCharacterEncoding("UTF-8");
+	public static String toDigiset(String password) {
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-512");
+			byte[] digisetBytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
+			StringBuilder sb = new StringBuilder();
 
-    	    List<String> errors = new ArrayList<String>();
+			for (byte b : digisetBytes) {
+				sb.append(String.format("%02x", b));
+			}
+			return sb.toString();
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException("Algoritmo SHA-512 non disponibile", e);
+		}
+	}
 
-    	    String email = request.getParameter("mail");
-    	    String password = request.getParameter("pwd");
+	private String validateField(String value, String fieldName, List<String> errors) {
+		if (value == null || value.trim().isEmpty()) {
+			errors.add("Il campo " + fieldName + " non può essere vuoto");
+			return "";
+		}
+		return value.trim();
+	}
 
-    	    email = validateField(email, "email", errors);
-    	    password = validateField(password, "password", errors);
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-    	    /*
-    	     * Se i campi non sono validi, torno alla pagina
-    	     * di registrazione e mostro gli errori.
-    	     */
-    	    if (!errors.isEmpty()) {
+		List<String> errors = new ArrayList<String>();
 
-    	        request.setAttribute("errors", errors);
-    	        request.setAttribute("mailValue", email);
+		String email = request.getParameter("mail");
+		String password = request.getParameter("pwd");
 
-    	        RequestDispatcher dispatcher =
-    	                request.getRequestDispatcher(
-    	                        "/WEB-INF/view/Setup.jsp"
-    	                );
+		email = validateField(email, "email", errors);
+		password = validateField(password, "password", errors);
 
-    	        dispatcher.forward(request, response);
-    	        return;
-    	    }
+		if (!errors.isEmpty()) {
 
-    	    try {
-    	        DataSource ds =
-    	                (DataSource) getServletContext()
-    	                        .getAttribute("DataSource");
+			request.setAttribute("errors", errors);
+			request.setAttribute("mailValue", email);
 
-    	        UserDaoImpl userDao =
-    	                new UserDaoImpl(ds);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/view/Setup.jsp");
 
-    	        UserBean existingUser =
-    	                userDao.doRetrieveByUsername(email);
+			dispatcher.forward(request, response);
+			return;
+		}
 
-    	        if (existingUser != null) {
+		try {
+			DataSource ds = (DataSource) getServletContext().getAttribute("DataSource");
 
-    	            errors.add(
-    	                    "Esiste già un account registrato con questa email."
-    	            );
+			UserDaoImpl userDao = new UserDaoImpl(ds);
 
-    	            request.setAttribute("errors", errors);
-    	            request.setAttribute("mailValue", email);
+			UserBean existingUser = userDao.doRetrieveByUsername(email);
 
-    	            request.getRequestDispatcher(
-    	                    "/WEB-INF/view/Setup.jsp"
-    	            ).forward(request, response);
+			if (existingUser != null) {
 
-    	            return;
-    	        }
+				errors.add("Esiste già un account registrato con questa email.");
 
-    	        UserBean user = new UserBean();
+				request.setAttribute("errors", errors);
+				request.setAttribute("mailValue", email);
 
-    	        user.setUsername(email);
+				request.getRequestDispatcher("/WEB-INF/view/Setup.jsp").forward(request, response);
 
-    	        user.setPasswordHash(
-    	                loginServlet.toDigiset(password)
-    	        );
+				return;
+			}
 
-    	        /*
-    	         * Il ruolo non deve essere letto dal form.
-    	         */
-    	        user.setRole("user");
+			UserBean user = new UserBean();
 
-    	        userDao.doSave(user);
-    	        
-    	        /*
-    	         * Recupero nuovamente l'utente perché il database
-    	         * ha generato il suo ID.
-    	         */
-    	        UserBean registeredUser =
-    	                userDao.doRetrieveByUsername(email);
+			user.setUsername(email);
 
-    	        if (registeredUser == null) {
-    	            throw new ServletException(
-    	                    "Registrazione completata, ma impossibile recuperare l'utente"
-    	            );
-    	        }
+			user.setPasswordHash(loginServlet.toDigiset(password));
 
-    	        HttpSession session = request.getSession();
+			user.setRole("user");
 
-    	        session.setAttribute("user", registeredUser);
-    	        session.setAttribute("userMail", registeredUser.getUsername());
-    	        session.setAttribute("role", registeredUser.getRole());
+			userDao.doSave(user);
 
-    	        session.setAttribute(
-    	                "authToken",
-    	                UUID.randomUUID().toString()
-    	        );
+			UserBean registeredUser = userDao.doRetrieveByUsername(email);
 
-    	        /*
-    	         * Mantiene l'eventuale carrello già creato
-    	         * mentre l'utente non era registrato.
-    	         */
-    	        CartBean cart =
-    	                (CartBean) session.getAttribute("cart");
+			if (registeredUser == null) {
+				throw new ServletException("Registrazione completata, ma impossibile recuperare l'utente");
+			}
 
-    	        if (cart == null) {
-    	            cart = new CartBean();
-    	            session.setAttribute("cart", cart);
-    	        }
+			HttpSession session = request.getSession();
 
-    	        response.sendRedirect(
-    	                request.getContextPath() + "/common/welcome"
-    	        );
+			session.setAttribute("user", registeredUser);
+			session.setAttribute("userMail", registeredUser.getUsername());
+			session.setAttribute("role", registeredUser.getRole());
 
-    	        return;
-    	    } catch (SQLException e) {
+			session.setAttribute("authToken", UUID.randomUUID().toString());
 
-    	        throw new ServletException(
-    	                "Errore durante la registrazione",
-    	                e
-    	        );
-    	    }
-    	}
+			CartBean cart = (CartBean) session.getAttribute("cart");
+
+			if (cart == null) {
+				cart = new CartBean();
+				session.setAttribute("cart", cart);
+			}
+
+			response.sendRedirect(request.getContextPath() + "/common/welcome");
+
+			return;
+		} catch (SQLException e) {
+
+			throw new ServletException("Errore durante la registrazione", e);
+		}
+	}
 }

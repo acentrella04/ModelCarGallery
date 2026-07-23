@@ -31,18 +31,11 @@ document.addEventListener("DOMContentLoaded", function () {
         var code = cartAction.dataset.code;
 
         if (action == null || action === "") {
-            showCartMessage(
-                "Azione del carrello non valida.",
-                true
-            );
+            showCartMessage("Azione del carrello non valida.",true);
             return;
         }
 
-        updateCart(
-            contextPath,
-            action,
-            code
-        );
+        updateCart(contextPath,action,code);
     });
 });
 
@@ -57,64 +50,41 @@ function updateCart(contextPath, action, code) {
         parameters.append("code", code);
     }
 
-    showCartMessage(
-        "Aggiornamento carrello...",
-        false
-    );
+    showCartMessage("Aggiornamento carrello...",false);
 
     fetch(contextPath + "/cart-ajax", {
-
-        method: "POST",
-
+		method: "POST",
         headers: {
-            "Content-Type":
-                "application/x-www-form-urlencoded;charset=UTF-8",
+            "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
 
-            "Accept":
-                "application/json"
+            "Accept":"application/json"
         },
 
         body: parameters.toString()
     })
     .then(function (response) {
 
-        return response.json()
-            .then(function (data) {
+        return response.json().then(function (data) {
 
                 if (!response.ok) {
-
-                    throw new Error(
-                        data.message ||
-                        "Errore durante l'aggiornamento del carrello."
-                    );
+                    throw new Error(data.message ||"Errore durante l'aggiornamento del carrello.");
                 }
-
                 return data;
             });
     })
     .then(function (data) {
 
         if (data.success !== true) {
-            throw new Error(
-                data.message ||
-                "Impossibile aggiornare il carrello."
-            );
+            throw new Error(data.message ||"Impossibile aggiornare il carrello.");
         }
 
         renderCart(data);
 
-        showCartMessage(
-            "Carrello aggiornato.",
-            false,
-            true
-        );
+        showCartMessage("Carrello aggiornato.",false,true);
     })
     .catch(function (error) {
 
-        showCartMessage(
-            error.message,
-            true
-        );
+        showCartMessage(error.message,true);
 
         console.error(error);
     });
@@ -123,20 +93,15 @@ function updateCart(contextPath, action, code) {
 
 function renderCart(data) {
 
-    var cartTable =
-        document.getElementById("cartTable");
+    var cartTable =document.getElementById("cartTable");
 
-    var cartBody =
-        document.getElementById("cartBody");
+    var cartBody =document.getElementById("cartBody");
 
-    var cartEmpty =
-        document.getElementById("cartEmpty");
+    var cartEmpty =document.getElementById("cartEmpty");
 
-    var cartSummary =
-        document.getElementById("cartSummary");
+    var cartSummary =document.getElementById("cartSummary");
 
-    var cartTotal =
-        document.getElementById("cartTotal");
+    var cartTotal =document.getElementById("cartTotal");
 
     if (cartBody == null) {
         return;
@@ -186,66 +151,32 @@ function renderCart(data) {
 
         var row = document.createElement("tr");
 
-        appendTextCell(
-            row,
-            item.name
-        );
+        appendTextCell(row,item.name);
 
-        appendTextCell(
-            row,
-            "€ " + formatMoney(item.price)
-        );
+        appendTextCell(row,"€ " + formatMoney(item.price));
 
-        var quantityCell =
-            document.createElement("td");
+        var quantityCell =document.createElement("td");
 
-        quantityCell.className =
-            "cart-quantity-controls";
+        quantityCell.className ="cart-quantity-controls";
 
-        quantityCell.appendChild(
-            createCartAction(
-                "−",
-                "deleteC",
-                item.code,
-                "Diminuisci la quantità di " + item.name
-            )
-        );
+        quantityCell.appendChild(createCartAction("−","deleteC",item.code,"Diminuisci la quantità di " + item.name));
 
-        var quantity =
-            document.createElement("strong");
+        var quantity =document.createElement("strong");
 
-        quantity.textContent =
-            " " + item.quantity + " ";
+        quantity.textContent =" " + item.quantity + " ";
 
         quantityCell.appendChild(quantity);
 
-        quantityCell.appendChild(
-            createCartAction(
-                "+",
-                "addC",
-                item.code,
-                "Aumenta la quantità di " + item.name
-            )
-        );
+        quantityCell.appendChild(createCartAction("+","addC",item.code,"Aumenta la quantità di " + item.name));
 
         row.appendChild(quantityCell);
 
-        appendTextCell(
-            row,
-            "€ " + formatMoney(item.subtotal)
+        appendTextCell(row,"€ " + formatMoney(item.subtotal)
         );
 
-        var actionCell =
-            document.createElement("td");
+        var actionCell =document.createElement("td");
 
-        actionCell.appendChild(
-            createCartAction(
-                "Rimuovi",
-                "removeAllC",
-                item.code,
-                "Rimuovi " + item.name + " dal carrello"
-            )
-        );
+        actionCell.appendChild(createCartAction("Rimuovi","removeAllC",item.code,"Rimuovi " + item.name + " dal carrello"));
 
         row.appendChild(actionCell);
 
@@ -253,8 +184,7 @@ function renderCart(data) {
     }
 
     if (cartTotal != null) {
-        cartTotal.textContent =
-            formatMoney(data.total);
+        cartTotal.textContent =formatMoney(data.total);
     }
 }
 
@@ -269,11 +199,7 @@ function appendTextCell(row, value) {
 }
 
 
-function createCartAction(
-        text,
-        action,
-        code,
-        ariaLabel) {
+function createCartAction(text,action,code,ariaLabel) {
 
     var link = document.createElement("a");
 
@@ -286,10 +212,7 @@ function createCartAction(
 
     link.textContent = text;
 
-    link.setAttribute(
-        "aria-label",
-        ariaLabel
-    );
+    link.setAttribute("aria-label",ariaLabel);
 
     return link;
 }
@@ -307,13 +230,9 @@ function formatMoney(value) {
 }
 
 
-function showCartMessage(
-        message,
-        isError,
-        hideAutomatically) {
+function showCartMessage(message,isError,hideAutomatically) {
 
-    var messageElement =
-        document.getElementById("cartAjaxMessage");
+    var messageElement =document.getElementById("cartAjaxMessage");
 
     if (messageElement == null) {
         return;
@@ -323,13 +242,11 @@ function showCartMessage(
 
     if (isError) {
 
-        messageElement.className =
-            "cart-message cart-message-error";
+        messageElement.className ="cart-message cart-message-error";
 
     } else {
 
-        messageElement.className =
-            "cart-message cart-message-success";
+        messageElement.className ="cart-message cart-message-success";
     }
 
     if (hideAutomatically === true) {

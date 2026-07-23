@@ -6,124 +6,98 @@ import java.util.List;
 
 public class CartBean implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private List<ProductBean> products;
+	private List<ProductBean> products;
 
-    public CartBean() {
-        products = new ArrayList<ProductBean>();
-    }
+	public CartBean() {
+		products = new ArrayList<ProductBean>();
+	}
 
-    /*
-     * Aggiunge una copia del prodotto.
-     * Se il prodotto è già presente, aumenta di fatto la quantità.
-     */
-    public void addProduct(ProductBean product) {
-        products.add(product);
-    }
+	public void addProduct(ProductBean product) {
+		products.add(product);
+	}
 
-    /*
-     * Elimina una sola copia del prodotto.
-     * Corrisponde alla diminuzione della quantità di uno.
-     */
-    public void deleteOneProduct(int code) {
+	public void deleteOneProduct(int code) {
 
-        for (int i = 0; i < products.size(); i++) {
+		for (int i = 0; i < products.size(); i++) {
 
-            ProductBean product = products.get(i);
+			ProductBean product = products.get(i);
 
-            if (product.getCode() == code) {
-                products.remove(i);
-                return;
-            }
-        }
-    }
+			if (product.getCode() == code) {
+				products.remove(i);
+				return;
+			}
+		}
+	}
 
-    /*
-     * Elimina tutte le copie dello stesso prodotto.
-     */
-    public void deleteAllProducts(int code) {
+	public void deleteAllProducts(int code) {
 
-        for (int i = products.size() - 1; i >= 0; i--) {
+		for (int i = products.size() - 1; i >= 0; i--) {
 
-            ProductBean product = products.get(i);
+			ProductBean product = products.get(i);
 
-            if (product.getCode() == code) {
-                products.remove(i);
-            }
-        }
-    }
+			if (product.getCode() == code) {
+				products.remove(i);
+			}
+		}
+	}
 
-    /*
-     * Svuota completamente il carrello.
-     */
-    public void clearCart() {
-        products.clear();
-    }
+	public void clearCart() {
+		products.clear();
+	}
 
-    /*
-     * Restituisce la quantità di un prodotto nel carrello.
-     */
-    public int getQuantity(int code) {
+	public int getQuantity(int code) {
 
-        int quantity = 0;
+		int quantity = 0;
 
-        for (ProductBean product : products) {
+		for (ProductBean product : products) {
 
-            if (product.getCode() == code) {
-                quantity++;
-            }
-        }
+			if (product.getCode() == code) {
+				quantity++;
+			}
+		}
 
-        return quantity;
-    }
+		return quantity;
+	}
 
-    /*
-     * Restituisce una lista contenente ogni prodotto
-     * una sola volta.
-     */
-    public List<ProductBean> getDistinctProducts() {
+	public List<ProductBean> getDistinctProducts() {
 
-        List<ProductBean> distinctProducts =
-                new ArrayList<ProductBean>();
+		List<ProductBean> distinctProducts = new ArrayList<ProductBean>();
 
-        for (ProductBean product : products) {
+		for (ProductBean product : products) {
 
-            boolean found = false;
+			boolean found = false;
 
-            for (ProductBean distinctProduct : distinctProducts) {
+			for (ProductBean distinctProduct : distinctProducts) {
 
-                if (distinctProduct.getCode() ==
-                        product.getCode()) {
+				if (distinctProduct.getCode() == product.getCode()) {
 
-                    found = true;
-                    break;
-                }
-            }
+					found = true;
+					break;
+				}
+			}
 
-            if (!found) {
-                distinctProducts.add(product);
-            }
-        }
+			if (!found) {
+				distinctProducts.add(product);
+			}
+		}
 
-        return distinctProducts;
-    }
+		return distinctProducts;
+	}
 
-    /*
-     * Calcola il totale del carrello.
-     */
-    public float getTotal() {
+	public float getTotal() {
 
-        float total = 0;
+		float total = 0;
 
-        for (ProductBean product : products) {
-            total += product.getPrice();
-        }
+		for (ProductBean product : products) {
+			total += product.getPrice();
+		}
 
-        return total;
-    }
+		return total;
+	}
 
-    public List<ProductBean> getProducts() {
-        return products;
-    }
+	public List<ProductBean> getProducts() {
+		return products;
+	}
 }

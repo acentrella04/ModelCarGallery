@@ -24,8 +24,7 @@
 
 			<a href="<%=request.getContextPath()%>/common/welcome">
 
-				<img id="imglogo" src="<%=request.getContextPath()%>/images/Gemini_Generated_Image_es7nd4es7nd4es7n.png"
-					alt="Model Car Gallery">
+				<img id="imglogo" src="<%=request.getContextPath()%>/images/Gemini_Generated_Image_es7nd4es7nd4es7n.png" alt="Model Car Gallery">
 
 			</a>
 
@@ -38,15 +37,12 @@
 				<h1>I miei ordini</h1>
 
 				<p>
-					In questa pagina puoi visualizzare tutti gli ordini
-					effettuati con il tuo account.
+					In questa pagina puoi visualizzare tutti gli ordini effettuati con il tuo account.
 				</p>
 
 			</section>
 
-			<% Collection<OrderBean> orders =
-				(Collection<OrderBean>)
-					request.getAttribute("orders");
+			<% Collection<OrderBean> orders =(Collection<OrderBean>)request.getAttribute("orders");
 
 					if (orders != null && !orders.isEmpty()) {
 

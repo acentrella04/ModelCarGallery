@@ -24,8 +24,7 @@
 
 			<a href="<%=request.getContextPath()%>/admin/welcome">
 
-				<img id="imglogo" src="<%=request.getContextPath()%>/images/Gemini_Generated_Image_es7nd4es7nd4es7n.png"
-					alt="Model Car Gallery">
+				<img id="imglogo" src="<%=request.getContextPath()%>/images/Gemini_Generated_Image_es7nd4es7nd4es7n.png" alt="Model Car Gallery">
 
 			</a>
 
@@ -45,10 +44,6 @@
 			</section>
 
 
-			<!-- =========================
-         FILTRI DEGLI ORDINI
-         ========================= -->
-
 			<form class="order-filters" action="<%=request.getContextPath()%>/admin/orders" method="get">
 
 				<div class="form-group">
@@ -57,8 +52,7 @@
 						Dalla data:
 					</label>
 
-					<input type="date" name="from" id="from" value="<%=request.getParameter(" from") !=null ?
-						request.getParameter("from") : "" %>">
+					<input type="date" name="from" id="from" value="<%=request.getParameter(" from") !=null ?request.getParameter("from") : "" %>">
 
 				</div>
 
@@ -68,8 +62,7 @@
 						Alla data:
 					</label>
 
-					<input type="date" name="to" id="to" value="<%=request.getParameter(" to") !=null ?
-						request.getParameter("to") : "" %>">
+					<input type="date" name="to" id="to" value="<%=request.getParameter(" to") !=null ?request.getParameter("to") : "" %>">
 
 				</div>
 
@@ -79,8 +72,7 @@
 						Email cliente:
 					</label>
 
-					<input type="email" name="mail" id="mail" placeholder="cliente@email.it"
-						value="<%=request.getParameter(" mail") !=null ? request.getParameter("mail") : "" %>">
+					<input type="email" name="mail" id="mail" placeholder="cliente@email.it" value="<%=request.getParameter(" mail") !=null ? request.getParameter("mail") : "" %>">
 
 				</div>
 
@@ -96,14 +88,8 @@
 
 			</form>
 
-
-			<!-- =========================
-         ELENCO DEGLI ORDINI
-         ========================= -->
-
 			<% Collection<OrderBean> orders =
-				(Collection<OrderBean>)
-					request.getAttribute("orders");
+				(Collection<OrderBean>)request.getAttribute("orders");
 
 					if (orders != null && !orders.isEmpty()) {
 
@@ -119,7 +105,7 @@
 						<p>
 							<strong>Cliente:</strong>
 							<%=order.getName()%>
-								<%=order.getSurname()%>
+							<%=order.getSurname()%>
 						</p>
 
 						<p>
@@ -135,16 +121,13 @@
 						<p>
 							<strong>Indirizzo di spedizione:</strong>
 							<%=order.getAddress()%>,
-								<%=order.getNumberAddress()%>
+							<%=order.getNumberAddress()%>
 						</p>
 
 						<p>
 							<strong>Metodo di pagamento:</strong>
 							<%=order.getPaymentMethod()%>
 						</p>
-
-
-						<!-- PRODOTTI DELL’ORDINE -->
 
 						<div class="table-wrapper">
 
@@ -220,9 +203,6 @@
 						<% } %>
 
 
-							<!-- =========================
-         NAVIGAZIONE
-         ========================= -->
 
 							<nav class="order-card">
 

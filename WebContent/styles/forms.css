@@ -755,3 +755,24 @@ table th {
 	border: none !important;
 	outline: none;
 }
+.scale-list form {
+    margin: 0;
+}
+
+.scale-list button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    background: transparent;
+}
+
+.scale-list button:hover {
+    text-decoration: underline;
+}
+
+.scale-list button.active-filter {
+    font-weight: bold;
+    border-left: 4px solid currentColor;
+}
